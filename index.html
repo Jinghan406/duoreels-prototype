@@ -297,6 +297,44 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .drawthumb img+img{object-fit:fill}
 .sendbar{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 26px;background:linear-gradient(transparent,#000 30%);z-index:5}
 .sendbar:empty{display:none}
+
+.prow{display:flex;align-items:stretch;gap:12px;background:var(--surface);border-radius:12px;padding:10px;margin-top:10px;cursor:pointer;transition:transform .15s}
+.prow:active{transform:scale(.985)}
+.prow .tx{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:6px}
+.prow .tx b{font:600 16px var(--ui);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .tx .tag{height:20px;font-size:13px;padding:0 10px}
+.prow .tx .s{display:flex;align-items:center;gap:6px;font:400 13px var(--ui);color:var(--grey);max-width:100%}
+.prow .tx .s span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv34{position:relative;flex:none;width:54px;aspect-ratio:3/4;border-radius:8px;background-size:cover;background-position:center}
+.cv34 .dur{position:absolute;right:4px;bottom:4px}
+.rail .cv34{width:112px;border-radius:10px}
+.gcard .thumb{aspect-ratio:3/4!important}
+.rvfix{display:flex;flex-direction:column;height:100%;padding-top:47px;background:#000}
+.player.f{flex:1;min-height:0;background:#000;padding:4px 0}
+.player.f .vid{height:100%;aspect-ratio:9/16;border-radius:6px}
+.player.f .drawov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transform:none!important}
+.player.f .drawc{width:100%;height:100%;outline:2px solid var(--violet);outline-offset:-2px}
+.pbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;transition:opacity .25s}
+.player.playing .pbtn{opacity:0}
+.rvfix .timerow{flex:none;display:flex;align-items:center;gap:6px;padding:6px 12px 0 16px}
+.rvfix .strip{margin:22px 16px 8px}
+#strip .rbar{position:absolute;bottom:-8px;height:4px;border-radius:2px;background:var(--violet);pointer-events:none}
+.rngbox{position:absolute;top:-4px;bottom:-4px;border:3px solid var(--violet);border-radius:6px;background:rgba(142,108,255,.22);box-shadow:0 0 18px rgba(142,108,255,.6);z-index:3}
+.hnd{position:absolute;top:50%;left:-11px;width:18px;height:42px;margin-top:-21px;border-radius:6px;background:var(--violet);cursor:ew-resize;touch-action:none}
+.hnd.r{left:auto;right:-11px}
+.hnd::after{content:"";position:absolute;left:7px;top:13px;width:4px;height:16px;border-left:1.5px solid #000;border-right:1.5px solid #000;pointer-events:none}
+#decide{flex:none}
+.dbar{display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 16px;background:var(--surface);animation:voicein .25s var(--ease)}
+.dbar .lab{display:flex;align-items:center;gap:6px}
+.btn-out{height:40px;padding:0 16px;border-radius:10px;border:1.5px solid #fff;font:800 17px var(--disp);letter-spacing:.04em;text-transform:uppercase}
+.voicebar.f{margin:0;border-radius:0;min-height:64px;padding:10px 16px}
+.vmic{width:40px;height:40px;border-radius:50%;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;flex:none;animation:vpulse 1.4s ease-in-out infinite}
+@keyframes vpulse{50%{box-shadow:0 0 0 8px rgba(255,255,255,.18)}}
+.rvfix .tools{padding:8px 10px 28px}
+.tools .tl:disabled{opacity:.3}
+.drawthumb{position:relative;width:68px;aspect-ratio:9/16;border-radius:6px;overflow:hidden;margin-top:8px;flex:none}
+.drawthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.drawthumb img+img{object-fit:fill}
 </style>
 </head>
 <body>
@@ -405,7 +443,8 @@ function freshState(){
 function addMore(st){
  const T=[['Sunday reset','Vlog','me','Leo sent 2 questions'],['Thrift haul','Vlog'],['Night market','Food'],['Desk setup tour','Product'],['Matcha at home','Food'],['Day in my life','Vlog'],['Rainy café study','Vlog'],['Spring outfits','Vlog'],['5-min skincare','Talking head'],['Grocery haul','Food'],['Studio tour','Talking head'],['Weekend in Ojai','Travel'],['Book haul','Talking head'],['Pilates class','Vlog'],['Ramen night','Food'],['Packing for Tokyo','Travel'],['Plant care','Talking head']];
  const imgs=['c3','c2','c4','pu','c1','wed','gym','cafe','mr'];const eds=['L','J','S','L','J'];const days=['Mon','Tue','Wed','Thu','Fri','Sat'];
- T.forEach(([title,type,turn,sub],i)=>{const ed=eds[i%5];const v=i%3;st.projects.splice(5+i,0,{id:'x'+i,title,type,img:imgs[i%imgs.length],vimg:imgs[i%imgs.length],ed,status:'progress',round:v+1,rounds:3,v,turn:turn||'them',sub:sub||`${PPL[ed].n} · ${v?'v'+(v+1):'first cut'} due ${days[i%6]}`,due:days[i%6],price:60+(i%5)*15,dur:20+(i*7)%40,pins:[],drafts:[],all:[]});});
+ const mon=['Oct 28','Oct 24','Oct 19','Oct 15','Oct 9','Oct 4','Sep 30','Sep 26','Sep 22','Sep 18','Sep 14','Sep 10','Sep 6','Sep 2','Aug 29'];
+ T.forEach(([title,type,turn,sub],i)=>{const ed=eds[i%5];const v=i%3;if(i>=2){st.projects.push({id:'x'+i,title,type,img:imgs[i%imgs.length],vimg:imgs[i%imgs.length],ed,status:'done',v:2+(i%2),dur:20+(i*7)%40,sub:`${i%3?'Posted':'Done'} · ${mon[i-2]}`,pins:[],drafts:[],all:[]});return;}st.projects.splice(5+i,0,{id:'x'+i,title,type,img:imgs[i%imgs.length],vimg:imgs[i%imgs.length],ed,status:'progress',round:v+1,rounds:3,v,turn:turn||'them',sub:sub||`${PPL[ed].n} · ${v?'v'+(v+1):'first cut'} due ${days[i%6]}`,due:days[i%6],price:60+(i%5)*15,dur:20+(i*7)%40,pins:[],drafts:[],all:[]});});
  [['Coffee shop opening','Food','cafe'],['Beach day','Travel','c4'],['Morning pages','Vlog','mr']].forEach(([title,type,img],i)=>st.projects.push({id:'d'+i,title,type,img,vimg:img,ed:'L',status:'done',v:3,dur:30+i*5,sub:`Posted · Sep ${20-i*6}`,pins:[],drafts:[],all:[]}));
 }
 const proj=id=>S.projects.find(p=>p.id===id);
@@ -515,30 +554,22 @@ V.profile=()=>({html:`<div class="scroll"><div class="topbar">${back_()}</div><d
   <div class="pad" style="padding-bottom:40px"><button class="btn-main" data-act="profileDone">Continue</button></div>`});
 
 /* ---- creator home ---- */
-function homeCard(p){
-  const [tg,c]=tagFor(p);
-  const btn=p.newV?`<span class="btn-card" data-act="openReview" data-id="${p.id}">Review</span>`:(p.asks?`<span class="btn-card" data-act="ask" data-id="${p.id}">Answer</span>`:`<span class="btn-card" data-act="go" data-to="thread" data-k="${p.ed}">Reply</span>`);
-  return `<div class="pcard" data-act="openProject" data-id="${p.id}" role="button" tabindex="0">
-   <span class="tag ${c}">${tg}</span>
-   <div class="thumb" style="${bg(p.img)};width:64px;height:64px"></div>
-   <div class="tx"><b>${p.title}</b><div class="s">${av(p.ed,18)}${p.sub}</div><div style="margin-top:10px">${btn}</div></div>
-   <button class="ib" style="width:30px;margin-right:-6px;align-self:flex-start" data-act="more" data-id="${p.id}" aria-label="More">${I('more',22)}</button></div>`;
-}
-function waitRow(p){return `<div class="row" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><div class="thumb" style="${bg(p.img)};width:48px;height:48px"></div><span class="tx"><b class="lab" style="font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</b><div class="meta">${p.sub}</div></span>${av(p.ed,24)}<button class="ib" style="width:30px;margin-right:-6px" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
+function homeRow(p){const [tg,c]=tagFor(p);const need=p.newV||p.asks||p.turn==='me';
+  return `<div class="prow" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><div class="cv34" style="${bg(p.img)}">${p.v?`<span class="dur">v${p.v}</span>`:''}</div><div class="tx"><b>${p.title}</b>${need?`<span class="tag ${c}">${tg}</span>`:''}<div class="s">${av(p.ed,18)}<span>${p.sub}</span></div></div><button class="ib" style="width:30px;align-self:center;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
 V.home=()=>{
   const prog=S.projects.filter(p=>p.status==='progress');
-  const mine=prog.filter(p=>p.turn==='me'), rest=prog.filter(p=>p.turn!=='me');
+  const order=p=>p.newV?0:p.asks?1:p.turn==='me'?2:3;
+  const list=[...prog].sort((a,b)=>order(a)-order(b));
   const done=S.projects.filter(p=>p.status==='done');
   const unread=S.activity.filter(a=>a.unread).length;
   return {tab:'home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" data-act="go" data-to="activity" aria-label="Activity" style="position:relative">${I('bell')}${unread?`<i style="position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#fff"></i>`:''}</button></div></div>
   <div class="scroll" style="padding-top:101px;padding-bottom:110px"><div class="pad">
    <button class="btn-main" data-act="go" data-to="newproject">${I('plus',20,2.6)} New project</button>
-   <div class="sec" style="margin-top:24px"><span>In progress · ${prog.length}</span><button class="chip" data-act="filter" style="height:32px">${I('filter',16)}Filter</button></div>
-   <div class="stag">${mine.map(homeCard).join('')}</div>
-   <div class="list" style="margin-top:${mine.length?16:0}px">${rest.slice(0,5).map(waitRow).join('')}<button class="row" data-act="seeProg" style="justify-content:center;gap:4px"><b class="lab">See all ${prog.length} in progress</b>${I('chev',16)}</button></div>
+   <div class="sec" style="margin-top:24px"><span>In progress · ${prog.length}</span><button data-act="seeProg">See all ›</button></div>
+   <div class="stag">${list.map(homeRow).join('')}</div>
    <button class="row" style="margin-top:16px" data-act="tab" data-to="market"><span style="color:var(--grey)">${I('bag',20)}</span><span class="tx lab">Need an editor? Find one in Marketplace</span>${I('chev',18)}</button>
    <div class="sec"><span>Done · ${done.length}</span><button data-act="allDone">See all ›</button></div>
-   <div class="rail">${done.map(p=>`<button data-act="openProject" data-id="${p.id}"><div class="thumb" style="${bg(p.img)}"><span class="dur">${fmt(p.dur)}</span></div><div class="lab" style="margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div><div class="meta">${p.sub.split(' · ')[1]||''}</div></button>`).join('')}</div>
+   <div class="rail">${done.map(p=>`<button data-act="openProject" data-id="${p.id}"><div class="cv34" style="${bg(p.img)}"><span class="dur">${fmt(p.dur)}</span></div><div class="lab" style="margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div><div class="meta">${p.sub.split(' · ')[1]||''}</div></button>`).join('')}</div>
   </div></div>`};
 };
 V.activity=()=>({html:`<div class="scroll">${topbar('Activity',`${S.activity.filter(a=>a.unread).length} need you`)}<div class="pad">
@@ -598,24 +629,18 @@ V.project=({id})=>{const p=proj(id);const e=p.ed;
 let RV=null;
 const canNoteP=p=>p.turn==='me'&&p.status!=='done'&&p.v>0&&!p.asks;
 V.review=({id})=>{const p=proj(id);
- RV={id,t:p.newV?2:12,playing:false,timer:null,mode:null,cmp:false,full:false,tab:'watch',orient:(RV&&RV.orient)||'v',tool:'pen',ra:12,rb:16,pend:null};
- const frames=Array.from({length:9},(_,i)=>`<i style="${bg(p.vimg)};background-position:${i*12}% ${30+i*5}%"></i>`).join('');
- const e=p.ed;
- const rows=[['compare','Versions',`v${p.v} current${p.v>1?' · v'+(p.v-1):''}${p.v>2?' · v1':''}`,'versions'],['footage','Footage','6 clips · received','footage'],['list','Brief and references','2 reference videos','brief'],['cover','Cover and caption','Auto: frame at 0:21 · tap to change','coverpick'],['money','Money',`$${p.price||75} · $${(p.price||75)/2} on approval`,'money'],['people','People',`You + ${edName(p)} · Share link to invite`,'people']];
- return {html:`<div class="scroll" id="rvs">${topbar(`<span data-act="editName" data-id="${p.id}" style="display:inline-flex;gap:6px;align-items:center;cursor:pointer">${p.title} <span style="color:var(--meta)">${I('pen',14)}</span></span>`,`${p.type} · ${canNoteP(p)?'Your turn':(p.asks?edName(p)+' asks +1 day':'Waiting on '+edName(p))} · v${p.v} · round ${p.round} of ${p.rounds}`,`<div class="avs" style="margin-right:6px">${av('M',28)}${av(e,28)}</div><button class="ib" data-act="more" data-id="${p.id}" aria-label="More">${I('more')}</button>`)}
-  <div class="pad" style="padding-bottom:12px"><div class="seg"><button class="on" data-act="rvTab" data-t="watch">Watch</button><button data-act="rvTab" data-t="details">Details</button></div></div>
-  <div id="watchE">
-  <div class="player e ${RV.orient}" id="player"><div class="pbg" style="${bg(p.vimg)}"></div><div class="vid" id="vid"><img src="${IMG(p.vimg)}" alt="Video frame of ${p.title}"><img class="drawov" id="drawov" alt="" hidden><div id="bubbles"></div></div></div>
-  <div class="timerow"><span class="mono" id="tm">0:02 / 0:${p.dur}</span><span style="flex:1"></span><button class="ib" data-act="playpause" id="pp" aria-label="Play">${I('play',26)}</button><span style="flex:1"></span><button class="vchip" data-act="orientE">${RV.orient==='h'?'16:9':'9:16'}</button><button class="vchip" data-act="versions" data-id="${p.id}">v${p.v} ${I('down',14)}</button>${p.v>1?`<button class="ib" data-act="compareMode" aria-label="Compare">${I('compare',20)}</button>`:''}</div>
+ RV={id,t:p.newV?2:12,playing:false,timer:null,mode:null,cmp:false,full:false,tool:'pen',ra:12,rb:16,pend:null};
+ const frames=Array.from({length:8},(_,i)=>`<i style="${bg(p.vimg)};background-position:${i*14}% ${30+i*5}%"></i>`).join('');
+ const sub=canNoteP(p)?`Your turn · v${p.v} · round ${p.round} of ${p.rounds}`:(p.asks?`${edName(p)} asks +1 day · v${p.v}`:`Waiting on ${edName(p)} · v${p.v} · round ${p.round} of ${p.rounds}`);
+ return {html:`<div class="rvfix">
+  <div class="topbar">${back_()}<div class="tt" data-act="editName" data-id="${p.id}" style="cursor:pointer"><b>${p.title}</b><span>${av(canNoteP(p)?'M':p.ed,16)}${sub}</span></div><button class="ib" data-act="download" data-id="${p.id}" aria-label="Download v${p.v}">${I('dl',22)}</button><button class="ib" data-act="details" data-id="${p.id}" aria-label="Project details">${I('more')}</button></div>
+  <div class="player f" id="player"><div class="vid" id="vid"><img src="${IMG(p.vimg)}" alt="Video frame of ${p.title}"><img class="drawov" id="drawov" alt="" hidden><div id="bubbles"></div><button class="pbtn" data-act="playpause" aria-label="Play">${I('play',30)}</button></div></div>
+  <div class="timerow"><span class="mono" id="tm">0:02 / 0:${p.dur}</span><span style="flex:1"></span><button class="ib" data-act="playpause" id="pp" aria-label="Play">${I('play',24)}</button><button class="vchip" data-act="versions" data-id="${p.id}">v${p.v} ${I('down',14)}</button>${p.v>1?`<button class="ib" data-act="compareMode" aria-label="Compare">${I('compare',20)}</button>`:''}</div>
   <div class="strip" id="strip"><div class="frames">${frames}</div><div id="pins"></div><div id="rng"></div><div class="ph" id="ph"></div></div>
-  <div class="ticks"><span>0:00</span><span>0:10</span><span>0:20</span><span>0:30</span><span>0:${p.dur}</span></div>
-  <div id="bottom"></div>
-  <div class="pad" id="notesE"></div>
-  <div style="height:120px"></div></div>
-  <div id="detailsE" class="pad" hidden>${p.status!=='done'?`<div class="sec" style="margin:4px 0 0"><span>Round ${Math.max(p.round,1)} of ${p.rounds} · ${p.rounds-Math.max(p.round,1)} left</span></div>`:''}${pathHTML(p)}<div class="rows" style="margin-top:14px">${rows.map(([i,t,s,a])=>`<button class="row" data-act="${a}" data-id="${p.id}"><span style="color:#fff">${I(i,22)}</span><span class="tx"><b class="lab" style="font-size:15px">${t}</b><div class="meta">${s}</div></span>${I('chev',18)}</button>`).join('')}</div><div style="height:60px"></div></div>
-  </div><div class="sendbar" id="sendbar"></div>`,
+  <div id="decide"></div>
+  <div id="bottom"></div></div>`,
   mount(el){drawPins();drawBottom();setT(RV.t);
-   $('#vid',el).addEventListener('click',e=>{ if(RV.mode==='draw'||RV.cmp) return; if(!canNoteP(p)){act.playpause();return;} addNoteAt(); });
+   $('#vid',el).addEventListener('click',e=>{ if(e.target.closest('.pbtn'))return; if(RV.mode==='draw'||RV.cmp) return; if(!canNoteP(p)){act.playpause();return;} addNoteAt(); });
    const strip=$('#strip',el);let drag=null;const x2t=e=>{const r=strip.getBoundingClientRect();return Math.min(1,Math.max(0,(e.clientX-r.left)/r.width))*p.dur;};
    const mv=e=>{if(!drag)return;const t=Math.round(x2t(e));if(drag==='seek'){setT(x2t(e));return;}if(drag==='a')RV.ra=Math.min(t,RV.rb-1);else RV.rb=Math.max(t,RV.ra+1);drawRange();};
    strip.addEventListener('pointerdown',e=>{drag=(e.target.dataset&&e.target.dataset.h)||'seek';strip.setPointerCapture(e.pointerId);mv(e);});strip.addEventListener('pointermove',mv);strip.addEventListener('pointerup',()=>drag=null);
@@ -623,42 +648,38 @@ V.review=({id})=>{const p=proj(id);
 function rvP(){return RV?proj(RV.id):null;}
 const fmtR=d=>d.b?`${fmt(d.t)}–${fmt(d.b)}`:fmt(d.t);
 function setT(t){const p=rvP();RV.t=Math.max(0,Math.min(p.dur,t));const tm=$('#tm');if(tm)tm.textContent=`${fmt(RV.t)} / ${fmt(p.dur)}`;const ph=$('#ph');if(ph)ph.style.left=(RV.t/p.dur*100)+'%';
- const near=[...p.pins].find(x=>Math.abs(x.t-RV.t)<1.2);const b=$('#bubbles');if(b){if(near&&!RV.playing&&RV.mode!=='draw'){const d=p.drafts.find(x=>x.t===near.t)||p.all.find(x=>x.t===near.t);b.innerHTML=`<div class="pinb" style="left:50%;bottom:12px;transform:translateX(-50%)">${av(near.by,22)}<span class="mono">${d?fmtR(d):fmt(near.t)}</span>${d?esc(d.text):'Hold on the light'}</div>`;}else b.innerHTML='';}
+ const near=[...p.pins].find(x=>Math.abs(x.t-RV.t)<1.2);const b=$('#bubbles');if(b){if(near&&!RV.playing&&RV.mode!=='draw'){const d=p.drafts.find(x=>x.t===near.t)||p.all.find(x=>x.t===near.t);b.innerHTML=`<div class="pinb" style="left:8px;right:8px;bottom:10px">${av(near.by,22)}<span class="mono">${d?fmtR(d):fmt(near.t)}</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d?esc(d.text):'Hold on the light'}</span></div>`;}else b.innerHTML='';}
  const ov=$('#drawov');if(ov){const d=RV.mode==='draw'?null:p.drafts.find(x=>x.draw&&Math.abs(x.t-RV.t)<2);if(d){ov.src=d.draw;ov.hidden=false;}else ov.hidden=true;}}
 function drawPins(){const p=rvP();const el=$('#pins');if(!el)return;el.innerHTML=p.pins.map(x=>`<div class="pin" style="left:${x.t/p.dur*100}%;--c:${PPL[x.by].c}">${av(x.by,22)}</div>`).join('')+p.drafts.filter(d=>d.b).map(d=>`<span class="rbar" style="left:${d.t/p.dur*100}%;width:${(d.b-d.t)/p.dur*100}%"></span>`).join('');}
-function drawRange(){const p=rvP();const r=$('#rng');if(!r)return;if(RV.mode!=='range'){r.innerHTML='';return;}r.innerHTML=`<div class="rngbox" style="left:${RV.ra/p.dur*100}%;width:${(RV.rb-RV.ra)/p.dur*100}%"><span class="hnd" data-h="a"></span><span class="hnd r" data-h="b"></span></div>`;const l=$('#rlab');if(l)l.textContent=`${fmt(RV.ra)} – ${fmt(RV.rb)}`;}
-function drawBottom(){const p=rvP();const b=$('#bottom');if(!b)return;drawRange();drawNotesE();
- const ed=edName(p);
- if(!canNoteP(p)){b.innerHTML='';return;}
- if(RV.mode==='voice'){b.innerHTML=`<div class="voicebar e"><span class="vmic">${I('mic',20)}</span><div style="display:flex;flex-direction:column;gap:2px"><b class="lab">Talking to ${ed}</b><span class="mono" style="font-size:13px" id="vt">Listening · 0:00</span></div><div class="wave">${Array.from({length:14},(_,i)=>`<i style="animation-delay:${(i*73)%600}ms"></i>`).join('')}</div><button class="btn-card" style="height:34px;font-size:16px" data-act="voiceStop">Done</button></div><p class="hint">The video plays. Talk; each sentence pins itself where you said it.</p>`;return;}
- if(RV.mode==='draw'){b.innerHTML=`<div class="drawtools">${[['pen','Pen'],['circle','Circle'],['line','Arrow']].map(([k,l])=>`<button class="${RV.tool===k?'on':''}" data-act="drawTool" data-k="${k}">${k==='circle'?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="12" rx="8" ry="6.5"/></svg>':k==='line'?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 19 19 5M11 5h8v8"/></svg>':I('pen',22,1.6)}${l}</button>`).join('')}<button data-act="drawUndo">${I('undo',22,1.6)}Undo</button><span style="flex:1"></span><button class="btn-sec sm" data-act="drawCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px" data-act="drawDone">Done</button></div><p class="hint">Draw right on the video: circle it, point at it, scribble.</p>`;return;}
- if(RV.mode==='range'){b.innerHTML=`<div class="drawtools" style="padding:10px 12px"><div><b class="lab" id="rlab">${fmt(RV.ra)} – ${fmt(RV.rb)}</b><div class="meta">Drag the two handles on the strip</div></div><span style="flex:1"></span><button class="btn-sec sm" data-act="rangeCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px" data-act="rangeAdd">Add note</button></div><p class="hint">A range is one note for a whole part, e.g. “0:12 – 0:16 feels slow”.</p>`;return;}
- const n=p.drafts.length;
- b.innerHTML=`${RV.mode==='voiceDone'?`<div class="vdone">${I('spark',20)}<div style="flex:1"><b class="lab">3 notes from your voice</b><div class="meta">Pinned on the timeline</div></div><button class="btn-card" style="height:32px;font-size:15px" data-act="voiceCheck">Check</button></div>`:''}
-  <div class="tools">${[['mic','Voice','voice'],['text','Note','addNote'],['pen','Draw','draw'],['range','Range','range'],['cover','Cover','coverpick']].map(([i,l,a])=>`<button class="tl" data-act="${a}" data-id="${p.id}">${I(i,24,1.6)}${l}</button>`).join('')}<button class="notesbtn" data-act="toNotes">Notes ${n?`<span class="badge">${n}</span>`:''}</button></div>`;}
-function drawNotesE(){const p=rvP();const box=$('#notesE'),sb=$('#sendbar');if(!box)return;const ed=edName(p);
- const sentRow=d=>`<div class="nrow" style="align-items:flex-start"><div class="nt" style="${bg(p.vimg)}">${av(d.by,18)}</div><div style="flex:1;min-width:0"><div style="display:flex;gap:8px;align-items:center"><b class="lab">${d.by==='M'?'You':PPL[d.by].n}</b><span class="mono" style="font-size:13px;color:var(--grey)">${fmt(d.t)}</span><span class="meta">v${d.v}</span></div><div class="t15" style="margin-top:2px">${esc(d.text)}</div>${d.reply?`<div style="display:flex;gap:6px;align-items:center;margin-top:8px" class="meta">${av(d.reply.by,16)}${esc(d.reply.text)}</div>`:''}</div></div>`;
- let h='';
- if(canNoteP(p)){
-  h+=`<div class="sec"><span>Notes on v${p.v} · ${p.drafts.length} to send</span>${p.all.length?`<button data-act="openNotesAll">Earlier notes ›</button>`:''}</div>`;
-  h+=p.drafts.map(d=>`<div class="nrow" data-nid="${d.id}"><span class="tcE mono">${fmtR(d)}</span><div style="flex:1;min-width:0"><div class="t15" style="cursor:pointer" data-act="editDraft" data-nid="${d.id}">${esc(d.text)}</div>${d.draw?`<div class="drawthumb" data-act="seekTo" data-t="${d.t}"><img src="${IMG(p.vimg)}" alt=""><img src="${d.draw}" alt=""></div>`:d.att?`<span class="att">${I(d.att==='Voice'?'mic':d.att==='Range'?'range':d.att==='Drawing'?'pen':'image',12)}${d.att}</span>`:''}</div><button class="ib" style="width:32px;height:32px;color:var(--grey)" data-act="delDraftE" data-nid="${d.id}" aria-label="Delete">${I('trash',18,1.6)}</button></div>`).join('')||`<p class="meta">No notes yet. Tap the video, talk, draw or pick a range.</p>`;if(p.drafts.length)h+=`<button class="meta" style="display:block;margin:18px auto 0" data-act="approve">Happy with v${p.v}? Approve it instead</button>`;
-  sb.innerHTML=RV.mode&&RV.mode!=='voiceDone'?'':(p.drafts.length?`<button class="btn-main" data-act="sendNotes">Send ${p.drafts.length} note${p.drafts.length>1?'s':''} to ${ed}</button>`:`<button class="btn-main" data-act="approve">Approve v${p.v}</button>`);
- } else {
-  sb.innerHTML='';
-  if(p.asks) h+=`<div class="nowcard"><span class="tag yellow">${ed} asks +1 day</span><h3 style="margin-top:12px">Until Sat?</h3><p class="meta" style="margin:0 0 14px">"Need one more day for the colour pass." — ${ed}</p><div style="display:flex;gap:10px"><button class="btn-main" style="flex:1" data-act="askYes" data-id="${p.id}">Give 1 day</button><button class="btn-sec" data-act="askNo" data-id="${p.id}">Keep Fri</button></div></div>`;
-  else h+=`<div class="nowcard"><span class="tag grey">Waiting on ${ed}</span><h3 style="margin-top:12px">v${p.v+1} due ${p.due}</h3><p class="meta" style="margin:0 0 14px">${p.sub}. We'll tell you the moment it lands.</p><button class="btn-sec sm" data-act="simUpload">⚡ Demo: ${ed} uploads v${p.v+1}</button></div>`;
-  const sent=p.all.filter(d=>d.v===p.v);if(sent.length)h+=`<div class="sec"><span>Sent on v${p.v} · ${sent.length}</span></div>${sent.map(sentRow).join('')}`;
- }
- box.innerHTML=h;}
+function drawRange(){const p=rvP();const r=$('#rng');if(!r)return;if(RV.mode!=='range'){r.innerHTML='';return;}r.innerHTML=`<div class="rngbox" style="left:${RV.ra/p.dur*100}%;width:${(RV.rb-RV.ra)/p.dur*100}%"><span class="hnd" data-h="a"></span><span class="hnd r" data-h="b"></span></div>`;const l=$('#rlab');if(l)l.textContent=`${fmt(RV.ra)} – ${fmt(RV.rb)} · ${RV.rb-RV.ra} s`;}
+const dbar=(t,s,btn)=>`<div class="dbar"><div style="flex:1;min-width:0"><b class="lab">${t}</b><div class="meta">${s}</div></div>${btn}</div>`;
+function drawBottom(){const p=rvP();const b=$('#bottom'),dc=$('#decide');if(!b)return;drawRange();
+ const ed=edName(p),n=p.drafts.length,can=canNoteP(p);
+ // decision area
+ let d='';
+ if(RV.mode==='voice') d=`<div class="voicebar f"><span class="vmic">${I('mic',20)}</span><div style="display:flex;flex-direction:column;gap:2px"><b class="lab">Talking to ${ed}</b><span class="mono" style="font-size:13px" id="vt">Listening · 0:00</span></div><div class="wave">${Array.from({length:14},(_,i)=>`<i style="animation-delay:${(i*73)%600}ms"></i>`).join('')}</div><button class="btn-card" style="height:34px;font-size:16px" data-act="voiceStop">Done</button></div>`;
+ else if(RV.mode==='voiceDone') d=dbar(`${I('spark',14)} 3 notes from your voice`,'Pinned on the timeline',`<button class="btn-card" style="height:36px;font-size:16px" data-act="openNotes">Check</button>`);
+ else if(RV.mode==='range') d=dbar(`<span id="rlab">${fmt(RV.ra)} – ${fmt(RV.rb)} · ${RV.rb-RV.ra} s</span>`,'Drag the edges to set the part',`<button class="btn-sec sm" data-act="rangeCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="rangeAdd">Add note</button>`);
+ else if(RV.mode==='draw') d=dbar(`Draw on ${fmt(RV.t)}`,'Circle it, point at it, scribble',`<button class="btn-sec sm" data-act="drawCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="drawDone">Next</button>`);
+ else if(p.asks) d=dbar(`${ed} asks for 1 more day`,'“Need one more day for the colour pass.”',`<button class="btn-sec sm" data-act="askNo" data-id="${p.id}">Keep Fri</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="askYes" data-id="${p.id}">Give 1 day</button>`);
+ else if(!can) d=dbar(`Waiting on ${ed}`,`v${p.v+1} due ${p.due} · we’ll tell you when it lands`,`<button class="btn-sec sm" data-act="simUpload">⚡ Demo upload</button>`);
+ else if(n) d=dbar(`${n} new note${n>1?'s':''}`,`${ed} starts v${p.v+1} when you send`,`<button class="btn-main" style="width:auto;height:40px;font-size:17px;padding:0 18px" data-act="sendNotes">Send to ${ed}</button>`);
+ else d=dbar('No new notes',`Happy with v${p.v}?`,`<button class="btn-out" data-act="approve">Approve v${p.v}</button>`);
+ dc.innerHTML=d;
+ // toolbar
+ if(RV.mode==='draw'){b.innerHTML=`<div class="tools">${[['pen','Pen'],['line','Arrow'],['circle','Circle']].map(([k,l])=>`<button class="tl ${RV.tool===k?'on':''}" data-act="drawTool" data-k="${k}">${k==='circle'?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="8" ry="6.5"/></svg>':k==='line'?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 19 19 5M11 5h8v8"/></svg>':I('pen',24,1.6)}${l}</button>`).join('')}<button class="tl" data-act="drawUndo">${I('undo',24,1.6)}Undo</button></div>`;return;}
+ b.innerHTML=`<div class="tools">${[['mic','Voice','voice'],['chat','Text','addNote'],['pen','Draw','draw'],['range','Range','range'],['cover','Cover','coverpick']].map(([i,l,a])=>`<button class="tl ${RV.mode==='voice'&&a==='voice'?'on':''}" data-act="${a}" data-id="${p.id}" ${!can&&a!=='coverpick'?'disabled':''}>${I(i,24,1.6)}${l}</button>`).join('')}<button class="notesbtn" data-act="openNotes">Notes ${n?`<span class="badge">${n}</span>`:''}</button></div>`;}
 function addNoteAt(att,draft){const p=rvP();if(RV.playing)act.playpause();const pd=RV.pend||{};const t=draft?draft.t:(pd.t!=null?pd.t:Math.round(RV.t));const b=draft?draft.b:pd.b;att=att||pd.att;
- const prev=pd.draw?`<div class="drawthumb" style="margin:0;width:100px"><img src="${IMG(p.vimg)}" alt=""><img src="${pd.draw}" alt=""></div>`:`<div class="thumb" style="${bg(p.vimg)};width:46px;height:62px;border-radius:4px"></div>`;
+ const prev=pd.draw?`<div class="drawthumb" style="margin:0"><img src="${IMG(p.vimg)}" alt=""><img src="${pd.draw}" alt=""></div>`:`<div class="thumb" style="${bg(p.vimg)};width:46px;height:62px;border-radius:4px"></div>`;
  openSheet(`<div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px">${av('M',26)}<b class="lab" style="font-size:15px;flex:1">${draft?'Edit note · ':'Note at '}${fmt(t)}${b?` – ${fmt(b)}`:''}</b>${att?`<span class="att" style="margin:0">${att}</span>`:''}</div>
  <div style="display:flex;gap:10px">${prev}<textarea class="field" id="nt" style="min-height:62px;flex:1" placeholder="${pd.draw?'Say what the drawing means…':b?'What should change in this part?':'What should change here?'}">${draft?esc(draft.text):''}</textarea></div>
- <div style="display:flex;align-items:center;gap:4px;margin-top:12px;color:#ddd">${['mic','image','link'].map(i=>`<button class="ib" style="width:38px;height:38px">${I(i,20,1.6)}</button>`).join('')}<button class="ib" style="width:38px;height:38px;color:var(--violet)" data-act="aiNote">${I('spark',20)}</button><span style="flex:1"></span><button class="ib" style="background:var(--violet);color:#000;border-radius:50%" data-act="saveNote" data-t="${t}" data-att="${att||''}" data-edit="${draft?draft.id:''}" aria-label="Add to To send">${I('up',22,2.4)}</button></div>
+ <div style="display:flex;align-items:center;gap:4px;margin-top:12px;color:#ddd">${['mic','image','link'].map(i=>`<button class="ib" style="width:38px;height:38px">${I(i,20,1.6)}</button>`).join('')}<button class="ib" style="width:38px;height:38px;color:var(--violet)" data-act="aiNote">${I('spark',20)}</button><span style="flex:1"></span><button class="ib" style="background:var(--violet);color:#000;border-radius:50%" data-act="saveNote" data-t="${t}" data-att="${att||''}" data-edit="${draft?draft.id:''}" aria-label="Add note">${I('up',22,2.4)}</button></div>
  <p class="kbd-hint">↑ adds it to your notes. ${edName(p)} sees nothing until you press Send.</p>`,bx=>setTimeout(()=>$('#nt',bx).focus(),350),()=>{RV&&(RV.pend=null);});}
+function detailsSheet(id){const p=proj(id);const rows=[['compare','Versions',`v${p.v} current${p.v>1?' · v'+(p.v-1):''}${p.v>2?' · v1':''}`,'versions'],['footage','Footage','6 clips · received','footage'],['list','Brief and references','2 reference videos','brief'],['cover','Cover and caption','Auto: frame at 0:21 · tap to change','coverpick'],['money','Money',`$${p.price||75} · $${(p.price||75)/2} on approval`,'money'],['people','People',`You + ${edName(p)} · Share link to invite`,'people']];
+ openSheet(`<h3 class="t20" style="margin:4px 0 4px">${p.title}</h3><p class="meta" style="margin:0">Round ${Math.max(p.round,1)} of ${p.rounds} · ${p.rounds-Math.max(p.round,1)} left</p>${pathHTML(p)}<div class="rows" style="margin-top:12px">${rows.map(([i,t,s,a])=>`<button class="row" data-act="detailRow" data-a="${a}" data-id="${p.id}"><span style="color:#fff">${I(i,22)}</span><span class="tx"><b class="lab" style="font-size:15px">${t}</b><div class="meta">${s}</div></span>${I('chev',18)}</button>`).join('')}</div><button class="meta" style="display:block;margin:14px auto 0" data-act="more" data-id="${p.id}">Rename, archive or delete</button>`);}
 function notesSheet(tab='send'){const p=rvP()||proj('mr');const ed=edName(p);
  const send=p.drafts, all=p.all;
- const row=(d,i)=>`<div class="nrow" data-nid="${d.id}"><div class="nt" style="${bg(p.vimg)};background-position:${(d.t*7)%100}% 40%">${av('M',18)}</div><div style="flex:1;min-width:0"><span class="mono" style="font-size:13px;color:var(--grey)">${fmt(d.t)}</span><div class="t15" style="margin-top:2px;cursor:pointer" data-txt data-act="editDraft" data-nid="${d.id}">${esc(d.text)}</div>${d.att?`<span class="att">${I(d.att==='Drawing'?'pen':'image',12)}${d.att}</span>`:''}</div><button class="ib" style="width:32px;height:32px;color:var(--grey)" data-act="delNote" data-nid="${d.id}" aria-label="Delete">${I('trash',18,1.6)}</button></div>`;
+ const row=(d,i)=>`<div class="nrow" data-nid="${d.id}"><div class="nt" style="${bg(p.vimg)};background-position:${(d.t*7)%100}% 40%">${av('M',18)}</div><div style="flex:1;min-width:0"><span class="mono" style="font-size:13px;color:var(--grey)">${fmtR(d)}</span><div class="t15" style="margin-top:2px;cursor:pointer" data-txt data-act="editDraft" data-nid="${d.id}">${esc(d.text)}</div>${d.draw?`<div class="drawthumb"><img src="${IMG(p.vimg)}" alt=""><img src="${d.draw}" alt=""></div>`:d.att?`<span class="att">${I(d.att==='Drawing'?'pen':d.att==='Voice'?'mic':d.att==='Range'?'range':'image',12)}${d.att}</span>`:''}</div><button class="ib" style="width:32px;height:32px;color:var(--grey)" data-act="delNote" data-nid="${d.id}" aria-label="Delete">${I('trash',18,1.6)}</button></div>`;
  const arow=d=>`<div class="nrow ${d.done?'done':''}" style="align-items:flex-start"><div class="nt" style="${bg(p.vimg)}">${av(d.by,18)}</div><div style="flex:1;min-width:0"><div style="display:flex;gap:8px;align-items:center"><b class="lab">${d.by==='M'?'You':PPL[d.by].n}</b><span class="mono" style="font-size:13px;color:var(--grey)">${fmt(d.t)}</span>${d.v<p.v?`<span class="meta" style="color:var(--violet)">FROM V${d.v}</span>`:''}</div><div class="t15" style="margin-top:2px">${esc(d.text)}</div>${d.reply?`<div style="display:flex;gap:6px;align-items:center;margin-top:8px" class="meta">${av(d.reply.by,16)}${esc(d.reply.text)}</div>`:''}${!d.done?`<button class="meta" style="margin-top:8px;color:#fff" data-act="replyNote" data-nid="${d.id}">Reply</button>`:''}</div><button class="circ ${d.done?'on':''}" data-act="tickNote" data-nid="${d.id}" aria-label="Mark done">${d.done?I('check',14,2.6):''}</button></div>`;
  const openA=all.filter(x=>!x.done), doneA=all.filter(x=>x.done);
  openSheet(`<div style="display:flex;align-items:center;margin:2px 0 10px"><h3 class="t20" style="flex:1">Notes</h3><div class="seg" style="width:190px"><button class="${tab==='send'?'on':''}" data-act="notesTab" data-t="send">To send ${send.length}</button><button class="${tab==='all'?'on':''}" data-act="notesTab" data-t="all">All ${all.length}</button></div></div>
@@ -846,16 +867,11 @@ const act={
  range(){if(RV.playing)act.playpause();const p=rvP();RV.mode='range';RV.ra=Math.min(Math.round(RV.t),p.dur-5);RV.rb=Math.min(p.dur,RV.ra+4);drawBottom();},
  rangeCancel(){RV.mode=null;drawBottom();},
  rangeAdd(){RV.pend={t:RV.ra,b:RV.rb,att:'Range'};RV.mode=null;drawBottom();addNoteAt();},
- rvTab(el){$$('button',el.parentNode).forEach(b=>b.classList.toggle('on',b===el));const w=el.dataset.t==='watch';$('#watchE').hidden=!w;$('#detailsE').hidden=w;$('#sendbar').style.display=w?'':'none';},
- orientE(el){RV.orient=RV.orient==='h'?'v':'h';$('#player').classList.toggle('h',RV.orient==='h');$('#player').classList.toggle('v',RV.orient==='v');el.textContent=RV.orient==='h'?'16:9':'9:16';},
- toNotes(){const sc=$('#rvs'),l=$('#notesE');if(sc&&l)sc.scrollTo({top:l.offsetTop-110,behavior:'smooth'});},
- voiceCheck(){RV.mode=null;drawBottom();act.toNotes();},
- openNotesAll(){notesSheet('all');},
- seekTo(el){setT(+el.dataset.t);$('#rvs').scrollTo({top:0,behavior:'smooth'});},
- delDraftE(el){const p=rvP();const id=+el.dataset.nid;const i=p.drafts.findIndex(d=>d.id===id);const [d]=p.drafts.splice(i,1);const pi=p.pins.findIndex(x=>x.t===d.t&&x.by==='M');if(pi>-1)p.pins.splice(pi,1);drawPins();drawBottom();setT(RV.t);toast('Note deleted',()=>{p.drafts.splice(i,0,d);p.pins.push({t:d.t,by:'M'});drawPins();drawBottom();});},
  aiNote(){const t=$('#nt');if(!t.value)t.value='Hold this shot 2 s longer, it feels rushed.';else t.value=t.value.replace(/^./,c=>c.toUpperCase()).replace(/\s*$/,'.').replace(/\.\.$/,'.');},
  saveNote(el){const p=rvP();const v=($('#nt').value||'').trim()||'Keep this moment.';if(el.dataset.edit){const d=p.drafts.find(x=>x.id==el.dataset.edit);if(d)d.text=v;closeSheet();drawBottom();toast('Note saved');return;}const pd=RV.pend||{};const t=+el.dataset.t;p.drafts.push({id:Date.now(),t,b:pd.b,draw:pd.draw,text:v,att:el.dataset.att||null});p.drafts.sort((x,y)=>x.t-y.t);p.pins.push({t,by:'M'});RV.pend=null;closeSheet();drawPins();drawBottom();setT(t);tick();},
- openNotes(){if(RV&&RV.mode==='voiceDone'){RV.mode=null;drawBottom();}act.toNotes();},
+ openNotes(){if(RV&&RV.mode==='voiceDone'){RV.mode=null;drawBottom();}notesSheet('send');},
+ details(el){detailsSheet(el.dataset.id);},
+ detailRow(el){const a=el.dataset.a,id=el.dataset.id;closeSheet(true);setTimeout(()=>act[a]({dataset:{id}}),a==='versions'||a==='money'||a==='people'?380:0);},
  notesTab(el){notesSheet(el.dataset.t);},
  delNote(el){const p=rvP();const id=+el.dataset.nid;const r=el.closest('.nrow');r.style.transform='translateX(-110%)';r.style.opacity=0;setTimeout(()=>{const i=p.drafts.findIndex(d=>d.id===id);const [d]=p.drafts.splice(i,1);const pi=p.pins.findIndex(x=>x.t===d.t&&x.by==='M');if(pi>-1)p.pins.splice(pi,1);notesSheet('send');drawPins();drawBottom();toast('Note deleted',()=>{p.drafts.splice(i,0,d);p.pins.push({t:d.t,by:'M'});drawPins();drawBottom();});},300);},
  tickNote(el){const p=rvP();const d=p.all.find(x=>x.id===+el.dataset.nid);d.done=!d.done;el.classList.toggle('on',d.done);el.innerHTML=d.done?I('check',14,2.6):'';tick();setTimeout(()=>notesSheet('all'),380);if(d.done)toast('Marked done',()=>{d.done=false;notesSheet('all');});},
@@ -863,7 +879,8 @@ const act={
   const short={'Cut the intro to about 3 seconds.':'Intro: 3 s max.','Slow down the coffee pour — hold 2 s longer.':'Hold the pour +2 s.','Use this kind of ending shot.':'End like the reference shot.'};
   p.drafts.forEach(d=>d.text=short[d.text]||d.text);notesSheet('send');toast('Tidied 3 notes · same meaning, shorter',()=>{});},
  async sendNotes(){const p=rvP();const n=p.drafts.length;if(!n)return;
-  const rows=$$('#notesE .nrow');rows.forEach((r,i)=>setTimeout(()=>r.classList.add('fly'),i*90));tick();await sleep(rows.length*90+420);
+  if(!$('#sheet-host').classList.contains('open')){notesSheet('send');await sleep(450);}
+  const rows=$$('#nlist .nrow');rows.forEach((r,i)=>setTimeout(()=>r.classList.add('fly'),i*90));tick();await sleep(rows.length*90+420);
   const sent=p.drafts.splice(0);sent.forEach(d=>p.all.unshift({id:d.id,t:d.t,by:'M',v:p.v,text:d.text,done:false}));
   p.newV=false;p.turn='them';p.sub=`${edName(p)} is on v${p.v+1}`;closeSheet();drawBottom();
   S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id)a.unread=false;});
@@ -890,7 +907,7 @@ const act={
  shareReel(){toast('Review link copied',null);},
  // final
  seg(el){$$('button',el.parentNode).forEach(b=>b.classList.toggle('on',b===el));},
- async download(){const o=document.createElement('div');o.className='overlay';o.innerHTML=`<div class="ocard"><svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke="#2C2C30"/><circle id="rc" cx="50" cy="50" r="44" stroke="#8E6CFF" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" transform="rotate(-90 50 50)"/><text x="50" y="56" text-anchor="middle" fill="#fff" font-family="Geist" font-weight="600" font-size="18" id="rt">0%</text></svg><b class="lab" style="font-size:16px">Saving v3 to Photos</b><span class="meta mono">morning_v3.mp4 · 0:42 · 1080p</span><button class="meta" style="color:#fff" id="cx">Cancel</button></div>`;$('#phone').appendChild(o);let x=0,stop=false;$('#cx',o).onclick=()=>{stop=true;o.remove();};
+ async download(el){const o=document.createElement('div');o.className='overlay';o.innerHTML=`<div class="ocard"><svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke="#2C2C30"/><circle id="rc" cx="50" cy="50" r="44" stroke="#8E6CFF" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" transform="rotate(-90 50 50)"/><text x="50" y="56" text-anchor="middle" fill="#fff" font-family="Geist" font-weight="600" font-size="18" id="rt">0%</text></svg><b class="lab" style="font-size:16px">Saving v${(proj(el?.dataset?.id)||proj('mr')).v} to Photos</b><span class="meta mono">${(proj(el?.dataset?.id)||proj('mr')).title.toLowerCase().replace(/[^a-z]+/g,'_')}_v${(proj(el?.dataset?.id)||proj('mr')).v}.mp4 · 1080p</span><button class="meta" style="color:#fff" id="cx">Cancel</button></div>`;$('#phone').appendChild(o);let x=0,stop=false;$('#cx',o).onclick=()=>{stop=true;o.remove();};
   while(x<100&&!stop){x=Math.min(100,x+Math.random()*9+3);$('#rc',o).style.strokeDashoffset=276.5*(1-x/100);$('#rt',o).textContent=Math.round(x)+'%';await sleep(120);}if(stop)return;
   $('.ocard',o).innerHTML=`<span class="check" style="width:56px;height:56px">${I('check',30,2.6)}</span><b class="lab" style="font-size:16px">Saved to Photos</b><span class="meta">Ready to post anywhere</span>`;tick();await sleep(1100);o.style.transition='opacity .3s';o.style.opacity=0;setTimeout(()=>o.remove(),300);},
  async aiWrite(){const c=$('#cap');c.classList.add('shimmer');await sleep(900);c.classList.remove('shimmer');const s='5 am, one coffee, zero notifications. Here is how I start slow. ☕';c.innerHTML='';for(let i=0;i<=s.length;i++){c.textContent=s.slice(0,i);await sleep(18);}c.innerHTML+=`<br><span style="color:var(--violet)">#morningroutine #slowliving</span>`;},
@@ -933,7 +950,7 @@ const act={
  bannerTap(){$('#banner').classList.remove('show');if(bannerFn)bannerFn();},
  saved(){toast('Brief saved · Leo sees a NEW tag');back();}
 };
-function voicePin(t,text){const p=rvP();if(!p||RV.mode!=='voice')return;p.drafts.push({id:Date.now()+t,t,text,att:'Voice'});p.drafts.sort((x,y)=>x.t-y.t);p.pins.push({t,by:'M'});drawPins();drawNotesE();}
+function voicePin(t,text){const p=rvP();if(!p||RV.mode!=='voice')return;p.drafts.push({id:Date.now()+t,t,text,att:'Voice'});p.drafts.sort((x,y)=>x.t-y.t);p.pins.push({t,by:'M'});drawPins();const nb=$('.notesbtn');if(nb)nb.innerHTML='Notes <span class="badge">'+p.drafts.length+'</span>';}
 function inviteSheet(id){const p=proj(id)||proj('mr');openSheet(`<h3 class="ptitle" style="font-size:40px;margin:6px 0 10px">Invite sent to ${edName(p)}</h3><p class="t15 grey" style="margin:0 0 16px">${edName(p)} can start as soon as he opens the link. Anyone else you share it with joins too.</p><div class="row" style="background:#000">${I('link',18)}<span class="tx mono" style="font-size:14px">duoreels.app/j/${(p.title||'reel').toLowerCase().replace(/[^a-z]+/g,'-').slice(0,14)}-7k2</span><button class="ib" style="width:34px;height:34px" data-act="copyLink" aria-label="Copy">${I('copy',18)}</button></div><div style="margin-top:22px"><button class="btn-main" data-act="closeSheet">Done</button></div>`);}
 function settingsSheet(id){const p=proj(id);openSheet(`<div style="display:flex;gap:12px;align-items:center;margin:4px 0 14px"><div class="thumb" style="${bg(p.img)};width:42px;height:56px"></div><div><b class="t17">${p.title}</b><div class="meta">With ${edName(p)} · ${p.status==='done'?'done':`round ${Math.max(p.round,1)} of ${p.rounds} · due ${p.due}`}</div></div></div>
  <div class="sec" style="margin-top:0"><span>About this video</span></div><div class="list" style="background:#2C2C30">${[['pen','Name, type & cover',`${p.title} · ${p.type}`,'editName'],['doc','Brief & brand','Calm, warm · logo at the end · 2 references','brief'],['cal','Deadline',`${p.due||'—'}`,'deadline'],['people','People',`You + ${edName(p)}`,'people']].map(([i,t,s,a])=>`<button class="row" data-act="${a}" data-id="${p.id}">${I(i,22)}<span class="tx"><b class="lab" style="font-size:15px">${t}</b><div class="meta">${s}</div></span>${I('chev',18)}</button>`).join('')}</div>
