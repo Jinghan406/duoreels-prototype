@@ -335,6 +335,8 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .drawthumb{position:relative;width:68px;aspect-ratio:9/16;border-radius:6px;overflow:hidden;margin-top:8px;flex:none}
 .drawthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .drawthumb img+img{object-fit:fill}
+.vid.empty{background:#0d0d0f;border:1px dashed #2C2C30;cursor:default}
+.vempty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:0 16px}
 </style>
 </head>
 <body>
@@ -346,10 +348,9 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
     <button data-act="jump" data-to="splash"><span class="n">00</span>Splash → sign up</button>
     <h2>Creator</h2>
     <button data-act="jump" data-to="home"><span class="n">01</span>Home</button>
-    <button data-act="jump" data-to="newproject"><span class="n">02</span>New project</button>
-    <button data-act="jump" data-to="project"><span class="n">03</span>Project · v3 ready</button>
-    <button data-act="jump" data-to="review"><span class="n">04</span>Review v3 + notes</button>
-    <button data-act="jump" data-to="final"><span class="n">05</span>Approve → download → post</button>
+    <button data-act="jump" data-to="newproject"><span class="n">02</span>Full flow: New project → v1 → v2 → v3 → post</button>
+    <button data-act="jump" data-to="project"><span class="n">03</span>Project · v3 to review</button>
+    <button data-act="jump" data-to="doneproj"><span class="n">04</span>Done project · download + post</button>
     <button data-act="jump" data-to="all"><span class="n">06</span>All projects + filter</button>
     <button data-act="jump" data-to="activity"><span class="n">07</span>Activity</button>
     <h2>Editor</h2>
@@ -469,6 +470,7 @@ function mount(entry,how){
   const cls={push:['in-r','out-l'],pop:['in-l','out-r'],tab:['fade-in','fade-out'],up:['up-in','fade-out'],none:[null,null]}[how]||[null,null];
   if(cls[0]) el.classList.add(cls[0]);
   if(how==='pop'&&out) out.style.zIndex=2;
+  if(out){ if(how==='none') out.remove(); else out.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id')); }
   host.appendChild(el); curEl=el;
   // tabbar
   const tb=$('#tabbar'); tb.classList.toggle('hide',!r.tab);
@@ -609,7 +611,7 @@ V.newproject=(p)=>{ NP=NP&&p.keep?NP:{name:'',type:'Vlog',brief:'',editor:p.edit
 
 /* ---- project page ---- */
 V.project=({id})=>{const p=proj(id);const e=p.ed;
- if(p.v>0&&p.status!=='done'&&!p.created) return V.review({id});
+ return V.review({id});
  let now='';
  if(p.status==='done') now=`<div class="nowcard"><span class="tag green">Approved</span><h3 style="margin-top:12px">Final is ready</h3><p class="meta" style="margin:0 0 14px">${p.sub} · v${p.v}</p><button class="btn-main" data-act="go" data-to="final" data-id="${p.id}">Open final video</button></div>`;
  else if(p.created) now=`<div class="nowcard"><h3>${edName(p)} is in · first cut by Fri</h3><div class="meta" style="display:flex;gap:6px;align-items:center;margin-bottom:14px">${av('M',16)}${av(e,16)} You + ${edName(p)} · 2 in this project</div><button class="btn-main" data-act="shareLink">Share link</button><p class="meta" style="margin:10px 0 0">Anyone with the link can join as editor or viewer</p></div>`;
@@ -629,22 +631,23 @@ V.project=({id})=>{const p=proj(id);const e=p.ed;
 let RV=null;
 const canNoteP=p=>p.turn==='me'&&p.status!=='done'&&p.v>0&&!p.asks;
 V.review=({id})=>{const p=proj(id);
- RV={id,t:p.newV?2:12,playing:false,timer:null,mode:null,cmp:false,full:false,tool:'pen',ra:12,rb:16,pend:null};
- const frames=Array.from({length:8},(_,i)=>`<i style="${bg(p.vimg)};background-position:${i*14}% ${30+i*5}%"></i>`).join('');
- const sub=canNoteP(p)?`Your turn · v${p.v} · round ${p.round} of ${p.rounds}`:(p.asks?`${edName(p)} asks +1 day · v${p.v}`:`Waiting on ${edName(p)} · v${p.v} · round ${p.round} of ${p.rounds}`);
+ RV={id,t:p.newV||!p.v?(p.v?2:0):12,playing:false,timer:null,mode:null,cmp:false,full:false,tool:'pen',ra:12,rb:16,pend:null};
+ const frames=Array.from({length:8},(_,i)=>p.v?`<i style="${bg(p.vimg)};background-position:${i*14}% ${30+i*5}%"></i>`:'<i style="background:#1C1C1E"></i>').join('');
+ const sub=p.status==='done'?`Done · v${p.v} is final`:!p.v?`Waiting for v1 · round 1 of ${p.rounds}`:canNoteP(p)?`Your turn · v${p.v} · round ${p.round} of ${p.rounds}`:(p.asks?`${edName(p)} asks +1 day · v${p.v}`:`Waiting on ${edName(p)} · v${p.v} · round ${p.round} of ${p.rounds}`);
  return {html:`<div class="rvfix">
-  <div class="topbar">${back_()}<div class="tt" data-act="editName" data-id="${p.id}" style="cursor:pointer"><b>${p.title}</b><span>${av(canNoteP(p)?'M':p.ed,16)}${sub}</span></div><button class="ib" data-act="download" data-id="${p.id}" aria-label="Download v${p.v}">${I('dl',22)}</button><button class="ib" data-act="details" data-id="${p.id}" aria-label="Project details">${I('more')}</button></div>
-  <div class="player f" id="player"><div class="vid" id="vid"><img src="${IMG(p.vimg)}" alt="Video frame of ${p.title}"><img class="drawov" id="drawov" alt="" hidden><div id="bubbles"></div><button class="pbtn" data-act="playpause" aria-label="Play">${I('play',30)}</button></div></div>
-  <div class="timerow"><span class="mono" id="tm">0:02 / 0:${p.dur}</span><span style="flex:1"></span><button class="ib" data-act="playpause" id="pp" aria-label="Play">${I('play',24)}</button><button class="vchip" data-act="versions" data-id="${p.id}">v${p.v} ${I('down',14)}</button>${p.v>1?`<button class="ib" data-act="compareMode" aria-label="Compare">${I('compare',20)}</button>`:''}</div>
+  <div class="topbar">${back_()}<div class="tt" data-act="editName" data-id="${p.id}" style="cursor:pointer"><b>${p.title}</b><span>${av(canNoteP(p)?'M':p.ed,16)}${sub}</span></div><button class="ib" data-act="${p.v?'download':'noop'}" data-id="${p.id}" aria-label="Download v${p.v}" ${p.v?'':'style="opacity:.3"'}>${I('dl',22)}</button><button class="ib" data-act="details" data-id="${p.id}" aria-label="Project details">${I('more')}</button></div>
+  <div class="player f" id="player"><div class="vid ${p.v?'':'empty'}" id="vid">${p.v?`<img src="${IMG(p.vimg)}" alt="Video frame of ${p.title}">`:`<div class="vempty">${MARK(46,'#3a3a42')}<b class="lab">v1 isn’t here yet</b><span class="meta">${edName(p)} is cutting the first version</span></div>`}<img class="drawov" id="drawov" alt="" hidden><div id="bubbles"></div>${p.v?`<button class="pbtn" data-act="playpause" aria-label="Play">${I('play',30)}</button>`:''}</div></div>
+  <div class="timerow"><span class="mono" id="tm">0:02 / 0:${p.dur}</span><span style="flex:1"></span><button class="ib" data-act="${p.v?'playpause':'noop'}" id="pp" aria-label="Play" ${p.v?'':'style="opacity:.3"'}>${I('play',24)}</button><button class="vchip" data-act="${p.v?'versions':'noop'}" data-id="${p.id}">${p.v?`v${p.v} ${I('down',14)}`:'No video yet'}</button>${p.v>1?`<button class="ib" data-act="compareMode" aria-label="Compare">${I('compare',20)}</button>`:''}</div>
   <div class="strip" id="strip"><div class="frames">${frames}</div><div id="pins"></div><div id="rng"></div><div class="ph" id="ph"></div></div>
   <div id="decide"></div>
   <div id="bottom"></div></div>`,
   mount(el){drawPins();drawBottom();setT(RV.t);
+   if(!canNoteP(p)&&!p.asks&&p.status!=='done'&&S.role!=='editor'){RV.cd=10;RV.cdt=setInterval(()=>{RV.cd--;const c=$('#acd');if(c)c.textContent=RV.cd;if(RV.cd<=0){clearInterval(RV.cdt);if(rvP()===p&&stack[stack.length-1]?.params?.id===p.id)act.simUpload({dataset:{id:p.id}});}},1000);}
    $('#vid',el).addEventListener('click',e=>{ if(e.target.closest('.pbtn'))return; if(RV.mode==='draw'||RV.cmp) return; if(!canNoteP(p)){act.playpause();return;} addNoteAt(); });
    const strip=$('#strip',el);let drag=null;const x2t=e=>{const r=strip.getBoundingClientRect();return Math.min(1,Math.max(0,(e.clientX-r.left)/r.width))*p.dur;};
    const mv=e=>{if(!drag)return;const t=Math.round(x2t(e));if(drag==='seek'){setT(x2t(e));return;}if(drag==='a')RV.ra=Math.min(t,RV.rb-1);else RV.rb=Math.max(t,RV.ra+1);drawRange();};
    strip.addEventListener('pointerdown',e=>{drag=(e.target.dataset&&e.target.dataset.h)||'seek';strip.setPointerCapture(e.pointerId);mv(e);});strip.addEventListener('pointermove',mv);strip.addEventListener('pointerup',()=>drag=null);
-   return()=>{clearInterval(RV.timer);clearInterval(RV.vt);(RV.vto||[]).forEach(clearTimeout);};}};};
+   return()=>{clearInterval(RV.timer);clearInterval(RV.vt);clearInterval(RV.cdt);(RV.vto||[]).forEach(clearTimeout);};}};};
 function rvP(){return RV?proj(RV.id):null;}
 const fmtR=d=>d.b?`${fmt(d.t)}–${fmt(d.b)}`:fmt(d.t);
 function setT(t){const p=rvP();RV.t=Math.max(0,Math.min(p.dur,t));const tm=$('#tm');if(tm)tm.textContent=`${fmt(RV.t)} / ${fmt(p.dur)}`;const ph=$('#ph');if(ph)ph.style.left=(RV.t/p.dur*100)+'%';
@@ -662,13 +665,14 @@ function drawBottom(){const p=rvP();const b=$('#bottom'),dc=$('#decide');if(!b)r
  else if(RV.mode==='range') d=dbar(`<span id="rlab">${fmt(RV.ra)} – ${fmt(RV.rb)} · ${RV.rb-RV.ra} s</span>`,'Drag the edges to set the part',`<button class="btn-sec sm" data-act="rangeCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="rangeAdd">Add note</button>`);
  else if(RV.mode==='draw') d=dbar(`Draw on ${fmt(RV.t)}`,'Circle it, point at it, scribble',`<button class="btn-sec sm" data-act="drawCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="drawDone">Next</button>`);
  else if(p.asks) d=dbar(`${ed} asks for 1 more day`,'“Need one more day for the colour pass.”',`<button class="btn-sec sm" data-act="askNo" data-id="${p.id}">Keep Fri</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="askYes" data-id="${p.id}">Give 1 day</button>`);
- else if(!can) d=dbar(`Waiting on ${ed}`,`v${p.v+1} due ${p.due} · we’ll tell you when it lands`,`<button class="btn-sec sm" data-act="simUpload">⚡ Demo upload</button>`);
+ else if(p.status==='done') d=dbar(`Approved · v${p.v} is final`,`$${(p.price||75)/2} sent to ${ed} · download or post it`,`<button class="btn-sec sm" data-act="download" data-id="${p.id}">${I('dl',16)}Save</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="go" data-to="post" data-id="${p.id}">Post</button>`);
+ else if(!can) d=dbar(`Waiting on ${ed} · v${p.v+1}`,`Due ${p.due} · arrives in <span id="acd">10</span> s in this demo`,`<button class="btn-sec sm" data-act="simUpload" data-id="${p.id}">⚡ Upload now</button>`);
  else if(n) d=dbar(`${n} new note${n>1?'s':''}`,`${ed} starts v${p.v+1} when you send`,`<button class="btn-main" style="width:auto;height:40px;font-size:17px;padding:0 18px" data-act="sendNotes">Send to ${ed}</button>`);
- else d=dbar('No new notes',`Happy with v${p.v}?`,`<button class="btn-out" data-act="approve">Approve v${p.v}</button>`);
+ else d=dbar(p.v>=p.rounds?`Last round · v${p.v}`:'No new notes',p.v>=p.rounds?'Approve it, or send notes for one more round':`Happy with v${p.v}?`,`<button class="btn-out" data-act="approve">Approve v${p.v}</button>`);
  dc.innerHTML=d;
  // toolbar
  if(RV.mode==='draw'){b.innerHTML=`<div class="tools">${[['pen','Pen'],['line','Arrow'],['circle','Circle']].map(([k,l])=>`<button class="tl ${RV.tool===k?'on':''}" data-act="drawTool" data-k="${k}">${k==='circle'?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="8" ry="6.5"/></svg>':k==='line'?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 19 19 5M11 5h8v8"/></svg>':I('pen',24,1.6)}${l}</button>`).join('')}<button class="tl" data-act="drawUndo">${I('undo',24,1.6)}Undo</button></div>`;return;}
- b.innerHTML=`<div class="tools">${[['mic','Voice','voice'],['chat','Text','addNote'],['pen','Draw','draw'],['range','Range','range'],['cover','Cover','coverpick']].map(([i,l,a])=>`<button class="tl ${RV.mode==='voice'&&a==='voice'?'on':''}" data-act="${a}" data-id="${p.id}" ${!can&&a!=='coverpick'?'disabled':''}>${I(i,24,1.6)}${l}</button>`).join('')}<button class="notesbtn" data-act="openNotes">Notes ${n?`<span class="badge">${n}</span>`:''}</button></div>`;}
+ b.innerHTML=`<div class="tools">${[['mic','Voice','voice'],['chat','Text','addNote'],['pen','Draw','draw'],['range','Range','range'],['cover','Cover','coverpick']].map(([i,l,a])=>`<button class="tl ${RV.mode==='voice'&&a==='voice'?'on':''}" data-act="${a}" data-id="${p.id}" ${(!can&&a!=='coverpick')||!p.v?'disabled':''}>${I(i,24,1.6)}${l}</button>`).join('')}<button class="notesbtn" data-act="openNotes">Notes ${n?`<span class="badge">${n}</span>`:''}</button></div>`;}
 function addNoteAt(att,draft){const p=rvP();if(RV.playing)act.playpause();const pd=RV.pend||{};const t=draft?draft.t:(pd.t!=null?pd.t:Math.round(RV.t));const b=draft?draft.b:pd.b;att=att||pd.att;
  const prev=pd.draw?`<div class="drawthumb" style="margin:0"><img src="${IMG(p.vimg)}" alt=""><img src="${pd.draw}" alt=""></div>`:`<div class="thumb" style="${bg(p.vimg)};width:46px;height:62px;border-radius:4px"></div>`;
  openSheet(`<div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px">${av('M',26)}<b class="lab" style="font-size:15px;flex:1">${draft?'Edit note · ':'Note at '}${fmt(t)}${b?` – ${fmt(b)}`:''}</b>${att?`<span class="att" style="margin:0">${att}</span>`:''}</div>
@@ -702,16 +706,16 @@ V.post=({id='mr'})=>{const p=proj(id);return {html:`<div class="scroll">${topbar
   <label class="lbl">Post to</label>
   <div class="card" style="padding:14px;display:flex;gap:14px">${[['T','TikTok',1],['R','Reels',1],['S','Shorts',0]].map(([k,n,on])=>`<button data-act="appTog" style="display:flex;flex-direction:column;align-items:center;gap:6px;font:500 13px var(--ui)"><span class="apt" data-on="${on}" style="width:48px;height:48px;border-radius:12px;background:${on?'#fff':'#2C2C30'};color:${on?'#000':'#888'};font:800 18px var(--ui);display:flex;align-items:center;justify-content:center;transition:all .25s;position:relative">${k}</span>${n}</button>`).join('')}<button style="display:flex;flex-direction:column;align-items:center;gap:6px;font:500 13px var(--ui);color:var(--grey)"><span style="width:48px;height:48px;border-radius:12px;border:1.5px dashed #3a3a42;display:flex;align-items:center;justify-content:center">${I('plus',20)}</span>More</button></div>
   <div style="margin-top:22px"><button class="btn-main" data-act="sendDrafts" data-id="${p.id}" id="sdb">Send 2 drafts</button></div><p class="meta" style="text-align:center;margin-top:10px">Goes to each app's drafts. Add tags, mentions and music there.</p></div></div>`};};
-V.coverpick=({id='mr'})=>{const p=proj(id);const frames=Array.from({length:9},(_,i)=>`<i style="${bg(p.vimg)};background-position:${i*12}% ${30+i*5}%"></i>`).join('');return {html:`<div style="padding-top:47px;display:flex;flex-direction:column;height:100%">${topbar('Cover','Square · used on Home, All projects and Done',`<button class="btn-card" style="height:32px;font-size:16px;margin-right:6px" data-act="saveCover">Save</button>`)}
+V.coverpick=({id='mr'})=>{const p=proj(id);const frames=Array.from({length:9},(_,i)=>`<i style="${bg(p.vimg)};background-position:${i*12}% ${30+i*5}%"></i>`).join('');return {html:`<div style="padding-top:47px;display:flex;flex-direction:column;height:100%">${topbar('Cover','3:4 · used on Home, All projects and Done',`<button class="btn-card" style="height:32px;font-size:16px;margin-right:6px" data-act="saveCover">Save</button>`)}
   <div class="seg" style="margin:4px 16px 0"><button class="on" data-act="orient" data-o="v">Vertical 9:16</button><button data-act="orient" data-o="h">Horizontal 16:9</button></div>
-  <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px 16px"><div id="cov" data-o="v" data-img="${p.vimg}" style="position:relative;height:100%;aspect-ratio:9/16;max-width:100%;border-radius:6px;overflow:hidden;${bg(p.vimg)};background-size:cover;background-position:50% 40%"><div id="sq" style="position:absolute;left:0;top:0;border:2.5px solid #fff;border-radius:6px;box-shadow:0 0 0 999px rgba(0,0,0,.62);touch-action:none;cursor:grab"><span id="ctitle" contenteditable="true" style="position:absolute;left:50%;bottom:12%;transform:translateX(-50%);background:#000;padding:6px 12px;font:700 15px var(--ui);border-radius:4px;white-space:nowrap;outline:none">My 5 am routine</span></div></div></div>
-  <p class="meta" style="text-align:center;margin:0 20px">Auto = centre square of the middle frame. Drag the square, or pick another frame below.</p>
+  <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px 16px"><div id="cov" data-o="v" data-img="${p.vimg}" style="position:relative;height:100%;aspect-ratio:9/16;max-width:100%;border-radius:6px;overflow:hidden;${bg(p.vimg)};background-size:cover;background-position:50% 40%"><div id="sq" style="position:absolute;left:0;top:0;border:2.5px solid #fff;border-radius:6px;box-shadow:0 0 0 999px rgba(0,0,0,.4);touch-action:none;cursor:grab"><span id="ctitle" contenteditable="true" style="position:absolute;left:50%;bottom:12%;transform:translateX(-50%);background:#000;padding:6px 12px;font:700 15px var(--ui);border-radius:4px;white-space:nowrap;outline:none">My 5 am routine</span></div></div></div>
+  <p class="meta" style="text-align:center;margin:0 20px">Auto = centre of the middle frame. Drag the 3:4 box, or pick another frame below.</p>
   <div class="meta" style="display:flex;justify-content:space-between;padding:10px 16px 0"><span class="mono" id="ct">0:21 / ${fmt(p.dur)}</span><span>Drag to pick the frame</span></div>
   <div class="strip" id="cstrip" style="margin:10px 16px 30px;height:56px"><div class="frames">${frames}</div><div class="cover-win" id="cwin" style="left:46%"></div></div></div>`,
   mount(el){const s=$('#cstrip',el),w=$('#cwin',el),c=$('#cov',el),sq=$('#sq',el);let d=false;const mv=e=>{const r=s.getBoundingClientRect();const x=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));w.style.left=`calc(${x*100}% - 20px)`;c.style.backgroundPosition=`${x*100}% ${30+x*40}%`;$('#ct',el).textContent=`${fmt(x*p.dur)} / ${fmt(p.dur)}`;};s.addEventListener('pointerdown',e=>{d=true;s.setPointerCapture(e.pointerId);mv(e)});s.addEventListener('pointermove',e=>d&&mv(e));s.addEventListener('pointerup',()=>d=false);
    let ds=false;sq.addEventListener('pointerdown',e=>{if(e.target.id==='ctitle')return;ds=true;sq.setPointerCapture(e.pointerId);sq._s=[e.clientX,e.clientY,sq.offsetLeft,sq.offsetTop];});sq.addEventListener('pointermove',e=>{if(!ds)return;const [x0,y0,l0,t0]=sq._s;if(c.dataset.o==='h'){sq.style.left=Math.min(c.clientWidth-sq.offsetWidth,Math.max(0,l0+e.clientX-x0))+'px';}else{sq.style.top=Math.min(c.clientHeight-sq.offsetHeight,Math.max(0,t0+e.clientY-y0))+'px';}});sq.addEventListener('pointerup',()=>ds=false);
    requestAnimationFrame(placeSq);}}};
-function placeSq(){const c=$('#cov'),sq=$('#sq');if(!c||!sq)return;const W=c.clientWidth,H=c.clientHeight;if(c.dataset.o==='h'){Object.assign(sq.style,{top:'0px',height:H+'px',width:H+'px',left:((W-H)/2)+'px'});}else{Object.assign(sq.style,{left:'0px',width:W+'px',height:W+'px',top:((H-W)/2)+'px'});}}
+function placeSq(){const c=$('#cov'),sq=$('#sq');if(!c||!sq)return;const W=c.clientWidth,H=c.clientHeight;if(c.dataset.o==='h'){const w=H*3/4;Object.assign(sq.style,{top:'0px',height:H+'px',width:w+'px',left:((W-w)/2)+'px'});}else{const h=Math.min(H,W*4/3);Object.assign(sq.style,{left:'0px',width:W+'px',height:h+'px',top:((H-h)/2)+'px'});}}
 V.brief=({id='mr'})=>{const p=proj(id);return {html:`<div class="scroll">${topbar('Brief and references',`${p.title} · ${edName(p)} sees this`)}<div class="pad">
   <label class="lbl" style="margin-top:6px">The brief</label><textarea class="field" style="min-height:110px">Reels, 30–45 s. Fast cuts, white one-line subtitles, no trending sounds. Start on the coffee.</textarea>
   <label class="lbl">Feel</label><div class="chips">${[['Calm',1],['Warm',1],['Bright',0],['Funny',0],['Cinematic',0]].map(([t,o])=>`<button class="chip ${o?'on':''}" data-act="togChip">${t}</button>`).join('')}</div>
@@ -810,6 +814,7 @@ const act={
   if(to==='project'){const p=proj('mr');p.newV=true;p.turn='me';go('project',{id:'mr'});}
   if(to==='review'){const p=proj('mr');p.newV=true;p.turn='me';go('project',{id:'mr'});}
   if(to==='final'){go('project',{id:'mr'});go('final',{id:'mr'});}
+  if(to==='doneproj'){go('project',{id:'c1'});}
   if(to==='all')go('all');if(to==='activity')go('activity');if(to==='messages')go('messages');},
  restart(){S=freshState();reset('splash');},
  signin(){go('profile');},email(){go('email');},codeDone(){if(stack[stack.length-1]?.name==='email')go('profile');},
@@ -838,9 +843,9 @@ const act={
  refAdd(){NP.refs.push('mk3');closeSheet();go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);},
  pickEditor(){openSheet(`<h3 class="t20" style="margin:4px 0 12px">Who edits?</h3><div class="list">${[['L','Leo Park','Worked together 4 times'],['S','Sara Kim','From Marketplace · $75']].map(([k,n,m])=>`<button class="row" data-act="setEd" data-k="${k}">${av(k,34)}<span class="tx"><b class="lab" style="font-size:15px">${n}</b><div class="meta">${m}</div></span>${NP.editor===k?I('check',18):''}</button>`).join('')}<button class="row" data-act="shareLink">${I('link',22)}<span class="tx"><b class="lab" style="font-size:15px">Share a link instead</b><div class="meta">Anyone you send it to can join</div></span></button><button class="row" data-act="tab" data-to="market">${I('bag',22)}<span class="tx"><b class="lab" style="font-size:15px">Find one in Marketplace</b></span>${I('chev',18)}</button></div>`);},
  setEd(el){NP.editor=el.dataset.k;closeSheet();go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);},
- sendInvite(){const name=(NP.name||'').trim()||'Sunday reset';const id='n'+Date.now();
-  S.projects.unshift({id,title:name,type:NP.type,img:'c3',vimg:'c3',ed:NP.editor,status:'progress',round:0,rounds:NP.rounds,v:0,turn:'them',created:true,sub:`Invite sent to ${PPL[NP.editor].n}`,due:'Fri',price:NP.price,dur:30,pins:[],drafts:[],all:[]});
-  stack.pop();go('project',{id},'push');setTimeout(()=>inviteSheet(id),420);tick();},
+ sendInvite(){const name=(NP.name||'').trim()||'Morning walk';const id='n'+Date.now();
+  S.projects.unshift({id,title:name,type:NP.type,img:'c3',vimg:'c3',ed:NP.editor,status:'progress',round:1,rounds:NP.rounds,v:0,turn:'them',sub:`${PPL[NP.editor].n} is on the first cut`,due:'Fri',price:NP.price,dur:30,pins:[],drafts:[],all:[]});
+  stack.pop();go('project',{id},'push');setTimeout(()=>toast(`Invite sent to ${PPL[NP.editor].n} · brief and price agreed`),420);tick();},
  shareLink(el){closeSheet(true);const id=el?.dataset?.id||stack[stack.length-1]?.params?.id;inviteSheet(id);},
  copyLink(el){el.innerHTML=`${I('check',18,2.4)}`;toast('Link copied');},
  editName(el,ev){ev&&ev.stopPropagation();const p=proj(el.dataset.id);openSheet(`<div style="display:flex;align-items:center;margin:4px 0 6px"><h3 class="t20" style="flex:1">Edit project</h3><button class="lab" style="color:var(--meta)" data-act="closeSheet">Cancel</button></div>
@@ -886,7 +891,7 @@ const act={
   S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id)a.unread=false;});
   toast(`${n} note${n>1?'s':''} sent to ${edName(p)}`,()=>{p.drafts=sent;sent.forEach(()=>p.all.shift());p.newV=true;p.turn='me';p.sub=`v${p.v} to review`;refresh();});refresh();},
  approve(){const p=rvP()||proj('mr');openSheet(`<span class="tag green">Approve v${p.v}</span><h3 class="t28" style="margin:14px 0 6px">Make v${p.v} the final?</h3><p class="t15 grey" style="margin:0 0 6px">$${(p.price||75)/2} goes to ${edName(p)} now. You can still download and post it any time.</p><div style="display:flex;gap:10px;margin-top:16px"><button class="btn-main" style="flex:1" data-act="approveYes">Approve</button><button class="btn-sec" data-act="closeSheet">Not yet</button></div>`);},
- approveYes(){const p=rvP()||proj('mr');p.status='done';p.newV=false;p.turn='them';p.sub='Approved · Nov 5';closeSheet();tick();stack.pop();go('final',{id:p.id});setTimeout(()=>toast(`Approved · $${(p.price||75)/2} sent to ${edName(p)}`),500);},
+ approveYes(){const p=rvP()||proj('mr');p.status='done';p.newV=false;p.turn='them';p.sub='Approved · Nov 9';closeSheet();tick();refresh();setTimeout(()=>toast(`Approved · $${(p.price||75)/2} sent to ${edName(p)}`),300);},
  voice(){RV.mode='voice';drawBottom();if(!RV.playing)act.playpause();let s=0;RV.vt=setInterval(()=>{s++;const e=$('#vt');if(e)e.textContent='Listening · '+fmt(s);},1000);
   RV.vto=[setTimeout(()=>voicePin(6,'Slower here, let it breathe.'),1200),setTimeout(()=>voicePin(17,'Brighter on the window light.'),2600),setTimeout(()=>voicePin(27,'Cut this part, too long.'),4000)];},
  voiceStop(){clearInterval(RV.vt);(RV.vto||[]).forEach(clearTimeout);if(RV.playing)act.playpause();RV.mode='voiceDone';drawBottom();},
@@ -941,10 +946,11 @@ const act={
   const b=$('#sv',o);b.disabled=false;b.onclick=()=>{o.remove();S.ed.uploaded=true;S.ed.todo.forEach(d=>d.done=true);tick();refresh();toast("v4 sent to Maya. We'll tell you when she replies.");};},
  simApprove(){banner(`${av('M',36)}<div style="flex:1"><b class="lab" style="font-size:15px">Maya approved v4 🎉</b><div class="meta">$37.50 is on its way to you · Morning routine</div></div>`,()=>{});S.ed.uploaded=true;setTimeout(()=>toast('Paid $37.50 · arrives Oct 30'),900);},
  // simulate
- simUpload(){if(S.role==='editor'){act.switchRole();}const p=proj('mr');if(p.status==='done'){p.status='progress';}p.v=Math.min(p.v+1,9);if(p.v>p.rounds)p.rounds=p.v;p.round=Math.min(p.round+1,p.rounds);p.newV=true;p.turn='me';p.sub=`v${p.v} to review`;p.pins=[{t:9,by:'L'}];p.drafts=[];
-  S.activity.unshift({by:'L',t:`Leo uploaded v${p.v}`,p:'Morning routine · just now',tag:[`NEW · V${p.v}`,'green'],act:[`Review v${p.v}`,'review','mr'],unread:true});
-  banner(`<div class="thumb" style="${bg('mr')};width:40px;height:52px"></div><div style="flex:1"><b class="lab" style="font-size:15px">Leo uploaded v${p.v}</b><div class="meta">Morning routine · 3 notes fixed · tap to review</div></div>`,()=>go('review',{id:'mr'}));
-  const cur=stack[stack.length-1]?.name;if(['home','project','activity','all'].includes(cur))refresh();},
+ simUpload(el){if(S.role==='editor'){act.switchRole();}const top=stack[stack.length-1];const id=el?.dataset?.id||(['review','project'].includes(top?.name)?top.params.id:'mr');const p=proj(id);if(p.status==='done'){p.status='progress';}
+  p.v=Math.min(p.v+1,9);if(p.v>p.rounds)p.rounds=p.v;p.round=p.v;p.newV=true;p.asks=false;p.turn='me';p.sub=`v${p.v} to review`;p.pins=p.v>1?[{t:Math.round(p.dur*.3),by:p.ed}]:[];p.drafts=[];p.all.forEach(a=>{if(a.v<p.v&&a.by==='M')a.reply=a.reply||{by:p.ed,text:'Fixed in v'+p.v+'.'};});
+  const ed=edName(p);S.activity.unshift({by:p.ed,t:`${ed} uploaded v${p.v}`,p:`${p.title} · just now`,tag:[`NEW · V${p.v}`,'green'],act:[`Review v${p.v}`,'review',p.id],unread:true});
+  banner(`<div class="thumb" style="${bg(p.img)};width:40px;height:52px"></div><div style="flex:1"><b class="lab" style="font-size:15px">${ed} uploaded v${p.v}</b><div class="meta">${p.title} · ${p.v>1?'your notes fixed · ':''}tap to review</div></div>`,()=>{if(stack[stack.length-1]?.params?.id!==p.id)go('project',{id:p.id});});
+  const cur=stack[stack.length-1]?.name;if(['home','project','review','activity','all'].includes(cur))refresh();},
  simAsk(){const p=proj('pu');p.asks=true;p.turn='me';p.sub='Wants until Tue · answer him';S.activity.unshift({by:'J',t:'Jon asks for 1 more day',p:'Product unboxing · just now',tag:['JON ASKS +1 DAY','yellow'],act:['Answer','ask','pu'],unread:true});
   banner(`${av('J',36)}<div style="flex:1"><b class="lab" style="font-size:15px">Jon asks for 1 more day</b><div class="meta">Product unboxing · Mon → Tue</div></div>`,()=>act.ask({dataset:{id:'pu'}}));if(['home','activity'].includes(stack[stack.length-1]?.name))refresh();},
  bannerTap(){$('#banner').classList.remove('show');if(bannerFn)bannerFn();},
