@@ -337,6 +337,17 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .drawthumb img+img{object-fit:fill}
 .vid.empty{background:#0d0d0f;border:1px dashed #2C2C30;cursor:default}
 .vempty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:0 16px}
+.npsec{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
+.npn{width:22px;height:22px;border-radius:50%;background:#2C2C30;display:flex;align-items:center;justify-content:center;font:700 12px var(--ui)}
+.npn.ok{background:var(--green);color:#000}
+.upl{width:100%;display:flex;align-items:center;gap:14px;padding:16px;border-radius:12px;border:1.5px dashed #3a3a42;background:var(--surface);margin-top:8px}
+.srcs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.srcs button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:10px;background:var(--surface);font:500 12px var(--ui);color:#ddd}
+.sic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font:800 16px var(--ui)}
+.clip{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;background:var(--surface);margin-top:8px;animation:voicein .25s var(--ease)}
+.cbar{height:3px;border-radius:2px;background:#2C2C30;margin-top:6px;overflow:hidden}.cbar i{display:block;height:100%;background:var(--green);transition:width .3s}
+.npopt{width:100%;display:flex;align-items:center;gap:10px;margin-top:24px;padding:14px 16px;border-radius:12px;background:var(--surface)}
+.btn-main:disabled{background:#2C2C30;color:#8a8a92;box-shadow:none}
 </style>
 </head>
 <body>
@@ -593,21 +604,36 @@ V.all=()=>{const l=filtered();const f=S.filter;const act=[...(f.status!=='all'?[
 
 /* ---- new project ---- */
 let NP;
-V.newproject=(p)=>{ NP=NP&&p.keep?NP:{name:'',type:'Vlog',brief:'',editor:p.editor||'L',price:75,rounds:3,refs:['mk1','mk6']};
+V.newproject=(p)=>{ if(!(NP&&p.keep)){const n=S.projects.filter(x=>/^Project \d+$/.test(x.title)).length+1;NP={name:'Project '+n,type:'',brief:'',editor:p.editor||'L',price:75,rounds:3,refs:[],clips:[],opt:false};}
+ const ed=PPL[NP.editor].n, okFoot=NP.clips.length>0;
+ const SRC=[['gdrive','Google Drive','#1FA463'],['dropbox','Dropbox','#0061FE'],['icloud','iCloud Drive','#3D8BFF'],['wetransfer','WeTransfer','#FFFFFF'],['frameio','Frame.io','#8E6CFF'],['link','Any link','#8A8A92']];
+ const req=(n,t,ok)=>`<div class="npsec"><span class="npn ${ok?'ok':''}">${ok?I('check',13,2.6):n}</span><b class="lab">${t}</b><span class="meta" style="margin-left:auto">Required</span></div>`;
  return {html:`<div class="scroll"><div class="topbar"><button class="ib" data-act="back" aria-label="Close">${I('close')}</button><b style="font:600 17px var(--ui)">New project</b></div><div class="pad">
-  <input class="field" id="npname" placeholder="Name it, e.g. Morning routine" value="${esc(NP.name)}" style="font:700 24px var(--ui);background:transparent;padding:6px 0;border:0;border-bottom:1.5px solid #2C2C30;border-radius:0">
-  <label class="lbl">Type · used by Filter</label><div class="chips" id="nptype">${['Vlog','Food','Talking head','Product','Travel'].map(t=>`<button class="chip ${NP.type===t?'on':''}" data-act="npType" data-t="${t}">${t}</button>`).join('')}<button class="chip">+ New type</button></div>
-  <label class="lbl">The brief</label><div style="position:relative"><textarea class="field" id="npbrief" placeholder="What should it feel like? Length, pace, music, captions…">${esc(NP.brief)}</textarea><div style="position:absolute;right:10px;bottom:10px;display:flex;gap:6px"><button class="ib" style="width:34px;height:34px" data-act="voiceBrief" aria-label="Speak your brief">${I('mic',18)}</button><button class="ib" style="width:34px;height:34px;color:var(--violet)" data-act="aiBrief" aria-label="Write with AI">${I('spark',18)}</button></div></div>
-  <label class="lbl">References</label><div style="display:flex;gap:8px">${NP.refs.map(r=>`<div class="reel" style="${bg(r)};width:84px"><span class="dur">${I('play',10)}</span></div>`).join('')}<button style="width:84px;aspect-ratio:9/13;border-radius:8px;border:1.5px dashed #3a3a42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:500 13px var(--ui);color:var(--grey)" data-act="addRef">${I('plus',20)}Add a link</button></div>
-  <label class="lbl">Details</label><div class="list">
-   <button class="row" data-act="pickEditor"><span class="tx">Editor</span>${av(NP.editor,22)}<b class="lab">${NP.editor==='L'?'Leo Park':'Sara Kim'}</b>${I('chev',16)}</button>
+  <div style="display:flex;align-items:center;gap:8px;border-bottom:1.5px solid #2C2C30"><input class="field" id="npname" value="${esc(NP.name)}" aria-label="Project name" style="font:700 24px var(--ui);background:transparent;padding:6px 0;border:0;border-radius:0;flex:1"><span style="color:var(--grey)">${I('pen',18)}</span></div>
+  <p class="meta" style="margin:6px 0 0">You can rename it any time.</p>
+  ${req(1,'Your footage',okFoot)}
+  ${NP.clips.map(c=>`<div class="clip" id="clip-${c.id}"><div class="thumb" style="${bg(c.img)};width:40px;height:54px;border-radius:6px"></div><div style="flex:1;min-width:0"><b class="lab" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.name)}</b><span class="meta" data-st>${c.p<100?`Uploading · ${c.p}%`:c.meta}</span><div class="cbar"><i style="width:${c.p}%"></i></div></div><button class="ib" style="width:30px;height:30px;color:var(--grey)" data-act="npDelClip" data-id="${c.id}" aria-label="Remove">${I('close',18)}</button></div>`).join('')}
+  <button class="upl" data-act="npUpload">${I('up',22,2)}<div style="text-align:left"><b class="lab">Upload from this phone</b><div class="meta">Videos and photos from your camera roll</div></div></button>
+  <p class="meta" style="margin:14px 0 8px">Or add a link to where your clips already are</p>
+  <div class="srcs">${SRC.map(([k,n,c])=>`<button data-act="npLink" data-k="${k}" data-n="${n}"><span class="sic" style="background:${c}1f;color:${c}">${k==='link'?I('link',18):n[0]}</span>${n}</button>`).join('')}</div>
+  ${req(2,'Who edits',true)}
+  <div class="list"><button class="row" data-act="pickEditor">${av(NP.editor,32)}<span class="tx"><b class="lab">${PPL[NP.editor].n==='Leo'?'Leo Park':'Sara Kim'}</b><div class="meta">${NP.editor==='L'?'Worked together 4 times':'From Marketplace · $75'}</div></span><span class="meta">Change</span>${I('chev',16)}</button>
+  <button class="row" data-act="tab" data-to="market"><span style="color:var(--grey)">${I('bag',20)}</span><span class="tx lab">Find someone new in Marketplace</span>${I('chev',16)}</button></div>
+  ${req(3,'Details',true)}
+  <div class="list">
    <div class="row"><span class="tx">Price <span class="meta">fair $50–150</span></span><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npPrice" data-d="-5">−</button><b class="lab mono" id="npp" style="width:44px;text-align:center">$${NP.price}</b><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npPrice" data-d="5">+</button></div>
    <div class="row"><span class="tx">Rounds</span><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npRounds" data-d="-1">−</button><b class="lab mono" id="npr" style="width:44px;text-align:center">${NP.rounds}</b><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npRounds" data-d="1">+</button></div>
    <button class="row"><span class="tx">First cut</span><b class="lab">Fri, Nov 14 · 6 pm</b>${I('chev',16)}</button>
    <button class="row"><span class="tx">Payment</span><b class="lab">50% now · 50% on approval</b>${I('chev',16)}</button></div>
-  <p class="meta" style="text-align:center;margin:16px 0 12px">Service fee 5% · nothing is charged until ${NP.editor==='L'?'Leo':'Sara'} accepts</p>
-  <button class="btn-main" data-act="sendInvite">Send invite to ${NP.editor==='L'?'Leo':'Sara'}</button><div style="height:40px"></div></div></div>`,
-  mount(el){$('#npname',el).addEventListener('input',e=>NP.name=e.target.value);$('#npbrief',el).addEventListener('input',e=>NP.brief=e.target.value);}};};
+  <button class="npopt" data-act="npOpt"><b class="lab">Optional</b><span class="meta">Brief, references, tag</span><span style="margin-left:auto;transform:rotate(${NP.opt?90:0}deg);transition:transform .2s;display:flex">${I('chev',18)}</span></button>
+  ${NP.opt?`<label class="lbl">The brief</label><div style="position:relative"><textarea class="field" id="npbrief" placeholder="What should it feel like? Length, pace, music, captions…">${esc(NP.brief)}</textarea><div style="position:absolute;right:10px;bottom:10px;display:flex;gap:6px"><button class="ib" style="width:34px;height:34px" data-act="voiceBrief" aria-label="Speak your brief">${I('mic',18)}</button><button class="ib" style="width:34px;height:34px;color:var(--violet)" data-act="aiBrief" aria-label="Write with AI">${I('spark',18)}</button></div></div>
+  <label class="lbl">References</label><div style="display:flex;gap:8px">${NP.refs.map(r=>`<div class="reel" style="${bg(r)};width:84px"><span class="dur">${I('play',10)}</span></div>`).join('')}<button style="width:84px;aspect-ratio:9/13;border-radius:8px;border:1.5px dashed #3a3a42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:500 13px var(--ui);color:var(--grey)" data-act="npRef">${I('plus',20)}Add a link</button></div>
+  <label class="lbl">Tag · used by Filter</label><div class="chips" id="nptype">${['Vlog','Food','Talking head','Product','Travel'].map(t=>`<button class="chip ${NP.type===t?'on':''}" data-act="npType" data-t="${t}">${t}</button>`).join('')}<button class="chip">+ New tag</button></div>`:''}
+  <p class="meta" style="text-align:center;margin:20px 0 12px">Service fee 5% · nothing is charged until ${ed} accepts</p>
+  <button class="btn-main" data-act="sendInvite" ${okFoot?'':'disabled'}>${okFoot?`Send invite to ${ed}`:'Add footage to continue'}</button><div style="height:40px"></div></div></div>`,
+  mount(el){$('#npname',el).addEventListener('input',e=>NP.name=e.target.value);const b=$('#npbrief',el);if(b)b.addEventListener('input',e=>NP.brief=e.target.value);if(NP.sc){const sc=$('.scroll',el);sc.scrollTop=NP.sc;NP.sc=0;}}};};
+function npRe(){const sc=$('#views .view:last-child .scroll');NP.sc=sc?sc.scrollTop:0;go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);}
+function npAddClip(c){c.id='c'+Date.now()+Math.random().toString(36).slice(2,5);c.p=0;NP.clips.push(c);npRe();const t=setInterval(()=>{c.p=Math.min(100,c.p+Math.round(8+Math.random()*14));const el=$('#clip-'+c.id);if(el){$('.cbar i',el).style.width=c.p+'%';$('[data-st]',el).textContent=c.p<100?`Uploading · ${c.p}%`:c.meta;}if(c.p>=100){clearInterval(t);if(NP.clips.length===1||$('#clip-'+c.id))npRe();}},350);}
 
 /* ---- project page ---- */
 V.project=({id})=>{const p=proj(id);const e=p.ed;
@@ -834,6 +860,13 @@ const act={
  askYes(el){const p=proj(el.dataset.id);p.asks=false;p.turn='them';p.due='Sat';p.sub=`${edName(p)} · due Sat`;S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id&&a.act[1]==='ask')a.unread=false;});closeSheet();tick();refresh();toast(`${edName(p)} has until Sat`,()=>{p.asks=true;p.turn='me';p.sub='Wants until Sat · answer him';refresh();});},
  askNo(el){const p=proj(el.dataset.id);p.asks=false;p.turn='them';p.sub=`${edName(p)} · due Fri`;closeSheet();refresh();toast(`Told ${edName(p)} Friday still stands`);},
  // new project
+ npUpload(){const n=NP.clips.length;const imgs=['mr','c3','player','cafe'];npAddClip({name:['IMG_4821.MOV','IMG_4822.MOV','IMG_4830.MOV','IMG_4833.MOV'][n%4],meta:['0:48 · 312 MB','1:12 · 486 MB','0:31 · 204 MB','2:05 · 820 MB'][n%4]+' · from phone',img:imgs[n%4]});},
+ npLink(el){const k=el.dataset.k,n=el.dataset.n;const ex={gdrive:'https://drive.google.com/drive/folders/1aX…',dropbox:'https://www.dropbox.com/sh/k2f…',icloud:'https://www.icloud.com/iclouddrive/0f…',wetransfer:'https://we.tl/t-8Hq…',frameio:'https://f.io/Lr3…',link:'https://'}[k];
+  openSheet(`<h3 class="t20" style="margin:4px 0 4px">Add from ${n}</h3><p class="meta" style="margin:0 0 14px">Paste a share link. ${PPL[NP.editor].n} gets the files when they accept.</p><input class="field" id="lk" value="${ex}" aria-label="Share link"><p class="meta" style="margin:10px 0 16px">Make sure the link is set to “Anyone with the link can view”.</p><button class="btn-main" data-act="npLinkAdd" data-n="${n}">Add link</button>`,b=>setTimeout(()=>$('#lk',b).focus(),300));},
+ npLinkAdd(el){const n=el.dataset.n;closeSheet(true);setTimeout(()=>npAddClip({name:`${n} folder`,meta:`6 clips · 1.8 GB · link from ${n}`,img:'c3'}),250);},
+ npDelClip(el){NP.clips=NP.clips.filter(c=>c.id!==el.dataset.id);npRe();},
+ npOpt(){NP.opt=!NP.opt;npRe();},
+ npRef(){NP.refs.push(['mk1','mk6','mk2'][NP.refs.length%3]);npRe();},
  npType(el){NP.type=el.dataset.t;$$('#nptype .chip').forEach(c=>c.classList.toggle('on',c===el));},
  npPrice(el){NP.price=Math.max(25,NP.price+ +el.dataset.d);$('#npp').textContent='$'+NP.price;},
  npRounds(el){NP.rounds=Math.min(5,Math.max(1,NP.rounds+ +el.dataset.d));$('#npr').textContent=NP.rounds;},
@@ -842,10 +875,10 @@ const act={
  addRef(){openSheet(`<h3 class="t20" style="margin:4px 0 12px">Add a reference</h3><input class="field" placeholder="Paste a TikTok, Reels or YouTube link" id="rl"><div style="margin-top:14px"><button class="btn-main" data-act="refAdd">Add</button></div>`,b=>setTimeout(()=>$('#rl',b).focus(),300));},
  refAdd(){NP.refs.push('mk3');closeSheet();go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);},
  pickEditor(){openSheet(`<h3 class="t20" style="margin:4px 0 12px">Who edits?</h3><div class="list">${[['L','Leo Park','Worked together 4 times'],['S','Sara Kim','From Marketplace · $75']].map(([k,n,m])=>`<button class="row" data-act="setEd" data-k="${k}">${av(k,34)}<span class="tx"><b class="lab" style="font-size:15px">${n}</b><div class="meta">${m}</div></span>${NP.editor===k?I('check',18):''}</button>`).join('')}<button class="row" data-act="shareLink">${I('link',22)}<span class="tx"><b class="lab" style="font-size:15px">Share a link instead</b><div class="meta">Anyone you send it to can join</div></span></button><button class="row" data-act="tab" data-to="market">${I('bag',22)}<span class="tx"><b class="lab" style="font-size:15px">Find one in Marketplace</b></span>${I('chev',18)}</button></div>`);},
- setEd(el){NP.editor=el.dataset.k;closeSheet();go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);},
- sendInvite(){const name=(NP.name||'').trim()||'Morning walk';const id='n'+Date.now();
-  S.projects.unshift({id,title:name,type:NP.type,img:'c3',vimg:'c3',ed:NP.editor,status:'progress',round:1,rounds:NP.rounds,v:0,turn:'them',sub:`${PPL[NP.editor].n} is on the first cut`,due:'Fri',price:NP.price,dur:30,pins:[],drafts:[],all:[]});
-  stack.pop();go('project',{id},'push');setTimeout(()=>toast(`Invite sent to ${PPL[NP.editor].n} · brief and price agreed`),420);tick();},
+ setEd(el){NP.editor=el.dataset.k;closeSheet();npRe();},
+ sendInvite(){if(!NP.clips.length){toast('Add your footage first');return;}const name=(NP.name||'').trim()||'Project 1';const id='n'+Date.now();
+  S.projects.unshift({id,title:name,type:NP.type||'Vlog',img:'c3',vimg:'c3',ed:NP.editor,status:'progress',round:1,rounds:NP.rounds,v:0,turn:'them',sub:`${PPL[NP.editor].n} is on the first cut`,due:'Fri',price:NP.price,dur:30,pins:[],drafts:[],all:[]});
+  stack.pop();go('project',{id},'push');setTimeout(()=>toast(`Invite sent to ${PPL[NP.editor].n} · footage shared`),420);tick();},
  shareLink(el){closeSheet(true);const id=el?.dataset?.id||stack[stack.length-1]?.params?.id;inviteSheet(id);},
  copyLink(el){el.innerHTML=`${I('check',18,2.4)}`;toast('Link copied');},
  editName(el,ev){ev&&ev.stopPropagation();const p=proj(el.dataset.id);openSheet(`<div style="display:flex;align-items:center;margin:4px 0 6px"><h3 class="t20" style="flex:1">Edit project</h3><button class="lab" style="color:var(--meta)" data-act="closeSheet">Cancel</button></div>
