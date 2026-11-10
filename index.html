@@ -354,6 +354,9 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .rbarrow{display:flex;align-items:center;gap:8px;height:16px}.rtrack{flex:1;height:5px;border-radius:3px;background:#2C2C30;overflow:hidden}.rtrack i{display:block;height:100%;background:var(--violet)}
 .rev{padding:16px 0;border-bottom:1px solid #2A2A2E}
 [hidden]{display:none!important}
+.prow{position:relative;margin-top:16px}
+.prow .rtag{position:absolute;top:-9px;right:14px;height:20px;font-size:12px;padding:0 10px;z-index:2}
+.cv34 .cut{position:absolute;left:4px;right:4px;bottom:4px;display:flex;align-items:center;justify-content:center;gap:2px;height:17px;border-radius:5px;background:rgba(0,0,0,.6);font:500 10px var(--mono);color:#fff}
 </style>
 </head>
 <body>
@@ -395,7 +398,7 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 </div>
 <script>
 /* ================= icons ================= */
-const ICO={
+const ICO={cut:'<circle cx="6" cy="7" r="2.6"/><circle cx="6" cy="17" r="2.6"/><path d="M8 8.5 20 18M8 15.5 20 6"/>',
 back:'<path d="m15 5-7 7 7 7"/>',close:'<path d="M6 6l12 12M18 6 6 18"/>',bell:'<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/>',plus:'<path d="M12 5v14M5 12h14"/>',
 filter:'<path d="M4 7h16M7 12h10M10 17h4"/>',more:'<circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/>',
 chev:'<path d="m9.5 6 6 6-6 6"/>',down:'<path d="m7 10 5 5 5-5"/>',play:'<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>',pause:'<path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor" stroke="none"/>',
@@ -417,6 +420,7 @@ clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',sliders:'<pa
 const I=(n,s=24,sw=1.8)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICO[n]||''}</svg>`;
 const MARK=(s=40,c='#fff')=>`<svg width="${s}" height="${s}" viewBox="30 24 190 210"><path fill="${c}" fill-rule="evenodd" d="M36 75.782C36 73.4648 36.6709 71.1971 37.9316 69.2529C39.1924 67.3087 40.9891 65.7711 43.1047 64.8259L120.144 30.4039C121.21 29.9276 122.378 29.7255 123.542 29.816C124.706 29.9064 125.829 30.2865 126.809 30.9217C127.788 31.5569 128.593 32.427 129.151 33.4528C129.708 34.4786 130 35.6275 130 36.7949V72.4825C130 73.4437 130.198 74.3947 130.582 75.2761C130.965 76.1575 131.526 76.9505 132.23 77.6055C132.933 78.2606 133.764 78.7637 134.671 79.0836C135.577 79.4034 136.54 79.5332 137.499 79.4647L199.003 75.0715C200.92 74.9346 202.846 75.194 204.659 75.8338C206.471 76.4735 208.133 77.4798 209.54 78.7899C210.947 80.1 212.069 81.6859 212.837 83.4487C213.604 85.2115 214 87.1134 214 89.036V182.287C214 184.588 213.339 186.84 212.095 188.776C210.851 190.711 209.076 192.248 206.984 193.203L131.907 227.478C130.841 227.964 129.669 228.176 128.5 228.092C127.331 228.008 126.201 227.632 125.215 226.998C124.229 226.364 123.418 225.493 122.856 224.464C122.294 223.435 122 222.282 122 221.11V191.221C122 190.141 121.75 189.076 121.27 188.109C120.79 187.142 120.093 186.299 119.233 185.646C118.372 184.993 117.373 184.548 116.312 184.345C115.252 184.143 114.158 184.189 113.118 184.479L53.7632 201.043C51.683 201.624 49.4967 201.715 47.3754 201.31C45.254 200.905 43.2551 200.015 41.5349 198.709C39.8148 197.403 38.42 195.717 37.4598 193.783C36.4996 191.848 36 189.718 36 187.558V75.782ZM100 101.085C100 100.19 100.24 99.3117 100.696 98.5412C101.151 97.7707 101.805 97.1365 102.589 96.705C103.373 96.2734 104.259 96.0603 105.154 96.0878C106.048 96.1153 106.919 96.3824 107.675 96.8613L153.33 125.776C154.043 126.227 154.629 126.851 155.036 127.59C155.442 128.328 155.655 129.157 155.655 130C155.655 130.843 155.442 131.673 155.036 132.411C154.629 133.15 154.043 133.773 153.33 134.224L107.675 163.139C106.919 163.618 106.048 163.885 105.154 163.913C104.259 163.94 103.373 163.727 102.589 163.296C101.805 162.864 101.151 162.23 100.696 161.459C100.24 160.689 100 159.81 100 158.915V101.085Z"/></svg>`;
 const IMG=k=>`img/${k}.jpg`;
+const mmss=t=>{t=Math.round(t||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');};
 const bg=k=>`background-image:url('${IMG(k)}')`;
 const PPL={M:{n:'Maya',c:'#8E6CFF'},L:{n:'Leo',c:'#3D8BFF'},J:{n:'Jon',c:'#FF9A4D'},S:{n:'Sara',c:'#2EC4B6'},D:{n:'Dani',c:'#2EC4B6'}};
 const av=(k,s=24)=>`<span class="av" style="--c:${PPL[k].c};width:${s}px;height:${s}px;font-size:${Math.round(s*.45)}px">${k}</span>`;
@@ -574,7 +578,7 @@ V.profile=()=>({html:`<div class="scroll"><div class="topbar">${back_()}</div><d
 
 /* ---- creator home ---- */
 function homeRow(p){const [tg,c]=tagFor(p);const need=p.newV||p.asks||p.turn==='me';
-  return `<div class="prow" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><div class="cv34" style="${bg(p.img)}">${p.v?`<span class="dur">v${p.v}</span>`:''}</div><div class="tx"><b>${p.title}</b>${need?`<span class="tag ${c}">${tg}</span>`:''}<div class="s">${av(p.ed,18)}<span>${p.sub}</span></div></div><button class="ib" style="width:30px;align-self:center;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
+  return `<div class="prow" data-act="openProject" data-id="${p.id}" role="button" tabindex="0">${need?`<span class="tag ${c} rtag">${tg}</span>`:''}<div class="cv34" style="${bg(p.img)}">${p.v?`<span class="cut">${I('cut',11,2)}${mmss(p.dur)}</span>`:''}</div><div class="tx"><b>${p.title}</b><span class="meta" style="font-size:13px">${p.v?`v${p.v} · round ${p.round||p.v} of ${p.rounds||3}`:`Round 1 of ${p.rounds||3} · no video yet`}</span><div class="s">${av(p.ed,18)}<span>${p.sub}</span></div></div><button class="ib" style="width:30px;align-self:center;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
 V.home=()=>{
   const prog=S.projects.filter(p=>p.status==='progress');
   const order=p=>p.newV?0:p.asks?1:p.turn==='me'?2:3;
@@ -610,7 +614,7 @@ V.all=()=>{const l=filtered();const f=S.filter;const act=[...(f.status!=='all'?[
 
 /* ---- new project ---- */
 let NP;
-V.newproject=(p)=>{ if(!(NP&&p.keep)){const n=S.projects.filter(x=>/^Project \d+$/.test(x.title)).length+1;NP={name:'Project '+n,type:'',brief:'',editor:p.editor||'L',price:75,rounds:3,refs:[],clips:[],opt:false};}
+V.newproject=(p)=>{ if(!(NP&&p.keep)){const d=new Date(),base=String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');let nm=base,k=2;while(S.projects.some(x=>x.title===nm))nm=`${base} (${k++})`;NP={name:nm,type:'',brief:'',editor:p.editor||'L',price:75,rounds:3,refs:[],clips:[],opt:false};}
  const ed=PPL[NP.editor].n, okFoot=NP.clips.length>0;
  const SRC=[['gdrive','Google Drive','#1FA463'],['dropbox','Dropbox','#0061FE'],['icloud','iCloud Drive','#3D8BFF'],['wetransfer','WeTransfer','#FFFFFF'],['frameio','Frame.io','#8E6CFF'],['link','Any link','#8A8A92']];
  const req=(n,t,ok)=>`<div class="npsec"><span class="npn ${ok?'ok':''}">${ok?I('check',13,2.6):n}</span><b class="lab">${t}</b><span class="meta" style="margin-left:auto">Required</span></div>`;
@@ -892,7 +896,7 @@ const act={
  refAdd(){NP.refs.push('mk3');closeSheet();go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);},
  pickEditor(){openSheet(`<h3 class="t20" style="margin:4px 0 12px">Who edits?</h3><div class="list">${[['L','Leo Park','Worked together 4 times'],['S','Sara Kim','From Marketplace · $75']].map(([k,n,m])=>`<button class="row" data-act="setEd" data-k="${k}">${av(k,34)}<span class="tx"><b class="lab" style="font-size:15px">${n}</b><div class="meta">${m}</div></span>${NP.editor===k?I('check',18):''}</button>`).join('')}<button class="row" data-act="shareLink">${I('link',22)}<span class="tx"><b class="lab" style="font-size:15px">Share a link instead</b><div class="meta">Anyone you send it to can join</div></span></button><button class="row" data-act="tab" data-to="market">${I('bag',22)}<span class="tx"><b class="lab" style="font-size:15px">Find one in Marketplace</b></span>${I('chev',18)}</button></div>`);},
  setEd(el){NP.editor=el.dataset.k;closeSheet();npRe();},
- sendInvite(){if(!NP.clips.length){toast('Add your footage first');return;}const name=(NP.name||'').trim()||'Project 1';const id='n'+Date.now();
+ sendInvite(){if(!NP.clips.length){toast('Add your footage first');return;}const name=(NP.name||'').trim()||'1110';const id='n'+Date.now();
   S.projects.unshift({id,title:name,type:NP.type||'Vlog',img:'s23',vimg:'s23',ed:NP.editor,status:'progress',round:1,rounds:NP.rounds,v:0,turn:'them',sub:`${PPL[NP.editor].n} is on the first cut`,due:'Fri',price:NP.price,dur:30,pins:[],drafts:[],all:[]});
   stack.pop();go('project',{id},'push');setTimeout(()=>toast(`Invite sent to ${PPL[NP.editor].n} · footage shared`),420);tick();},
  shareLink(el){closeSheet(true);const id=el?.dataset?.id||stack[stack.length-1]?.params?.id;inviteSheet(id);},
