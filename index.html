@@ -393,8 +393,10 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .nsendbtn{flex:1;height:54px;border-radius:28px;background:var(--violet);color:#000;font:900 24px var(--disp);letter-spacing:.02em;text-transform:uppercase;box-shadow:0 8px 28px rgba(142,108,255,.45)}
 
 .plink{display:flex;align-items:center;gap:10px;height:48px;margin-top:10px;padding:0 6px 0 14px;border-radius:12px;background:var(--surface)}.plink input{flex:1;min-width:0;background:none;border:0;outline:none;color:#fff;font:400 15px var(--ui)}.plink input::placeholder{color:var(--meta)}.plink button{height:36px;padding:0 12px;border-radius:8px;color:var(--violet)}
-.mrow{align-items:flex-start;gap:12px;padding-top:12px;padding-bottom:12px}.mrow .tx{min-width:0;flex:1}.mrow .lab{font-size:15px;white-space:nowrap}.mrow .mproj{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.mtxt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:400 14px/1.4 var(--ui);color:var(--grey);margin-top:3px}.mrow.u .mtxt{color:#eee}.mrow .dot{margin-top:24px}
+.mrow{align-items:center;gap:12px;padding-top:12px;padding-bottom:12px}.mrow .tx{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.ml1{display:flex;align-items:baseline;gap:6px;min-width:0}.ml1 b{font:600 16px var(--ui);white-space:nowrap;flex:none}.mproj{font:400 14px var(--ui);color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mtxt{font:400 15px var(--ui);color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mrow.u .mtxt{color:#eee}
+.mr{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none;align-self:stretch;justify-content:center}.mtime{font:400 14px var(--ui);color:var(--grey)}
 
 .prow.big{padding:12px}.prow.big .cv34{width:76px}.prow.big .tx{gap:5px}.prow.big .tx b{font-size:17px}
 .hbtn{height:32px!important;font-size:16px!important;padding:0 14px!important;margin-top:4px}
@@ -641,7 +643,7 @@ V.home=()=>{
   const mine=[...prog].filter(need).sort((a,b)=>order(a)-order(b)),rest=prog.filter(p=>!need(p));
   const done=S.projects.filter(p=>p.status==='done');
   const unread=S.inbox.filter(m=>m.u).length;
-  return {tab:'home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" data-act="go" data-to="activity" aria-label="Messages" style="position:relative">${I('chat')}${unread?`<i style="position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#fff"></i>`:''}</button></div></div>
+  return {tab:'home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" data-act="go" data-to="activity" aria-label="Messages" style="position:relative">${I('bell')}${unread?`<i style="position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#fff"></i>`:''}</button></div></div>
   <div class="scroll" style="padding-top:101px;padding-bottom:110px"><div class="pad">
    <button class="btn-main" data-act="go" data-to="newproject">${I('plus',20,2.6)} New project</button>
    <div class="sec" style="margin-top:24px"><span>In progress · ${prog.length}</span><button data-act="seeProg">See all ›</button></div>
@@ -654,7 +656,7 @@ V.home=()=>{
 };
 V.activity=()=>{const unread=S.inbox.filter(m=>m.u).length;
  return {html:`<div class="scroll">${topbar('Messages',unread?`${unread} unread`:'All caught up')}<div class="pad">
-  <div class="list stag" style="margin-top:6px">${S.inbox.map(m=>`<button class="row mrow ${m.u?'u':''}" ${m.id?`data-act="${m.go||'openProject'}" data-id="${m.id}"`:`data-act="go" data-to="thread" data-k="${m.by}"`}>${av(m.by,44)}<span class="tx"><span style="display:flex;align-items:baseline;gap:6px"><b class="lab">${PPL[m.by].n}${m.last?' '+m.last:''}</b>${m.proj?`<span class="meta mproj">· ${m.proj}</span>`:''}<span class="meta" style="margin-left:auto;flex:none">${m.time}</span></span><span class="mtxt">${m.t}</span></span>${m.u?'<span class="dot"></span>':''}</button>`).join('')}</div>
+  <div class="list stag" style="margin-top:6px">${S.inbox.map(m=>`<button class="row mrow ${m.u?'u':''}" ${m.id?`data-act="${m.go||'openProject'}" data-id="${m.id}"`:`data-act="go" data-to="thread" data-k="${m.by}"`}>${av(m.by,44)}<span class="tx"><span class="ml1"><b>${PPL[m.by].n}${m.last?' '+m.last:''}</b>${m.proj?`<span class="mproj">· ${m.proj}</span>`:''}</span><span class="mtxt">${m.t}</span></span><span class="mr"><span class="mtime">${m.time}</span><span class="dot" style="visibility:${m.u?'visible':'hidden'}"></span></span></button>`).join('')}</div>
   <p class="meta" style="margin-top:14px">Project updates and chats with editors, in one place.</p></div><div style="height:40px"></div></div>`};};
 V.messages=V.activity;
 /* ---- all projects ---- */
