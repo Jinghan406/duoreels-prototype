@@ -906,7 +906,7 @@ V['ed-project']=()=>{const E=S.ed;const p=proj('mr');const v=E.uploaded?4:3;
  return {html:`<div class="rvfix">
   <div class="topbar">${back_()}<div class="tt"><b>${p.title}</b><span>${av('M',16)}${E.uploaded?'Waiting on Maya · v4 sent':'Your turn · v4 due Fri 6 pm'}</span></div><button class="ib" data-act="edFootage" aria-label="Download footage">${I('dl',22)}</button><button class="ib" data-act="edDetails" aria-label="Project details">${I('more')}</button></div>
   <div class="player f" id="player"><div class="vid" id="vid"><img src="${IMG(p.vimg)}" alt="Video frame of ${p.title}"><img class="drawov" id="drawov" alt="" hidden><div id="bubbles"></div><button class="pbtn" data-act="playpause" aria-label="Play">${I('play',30)}</button></div></div>
-  <div class="timerow"><span class="mono" id="tm">0:03 / ${fmt(p.dur)}</span><span style="flex:1"></span><button class="ib" data-act="playpause" id="pp" aria-label="Play">${I('play',24)}</button><button class="vchip" data-act="edSoon">v${v} ${I('down',14)}</button></div>
+  <div class="timerow"><span class="mono" id="tm">0:03 / ${fmt(p.dur)}</span><span style="flex:1"></span><button class="ib" data-act="playpause" id="pp" aria-label="Play">${I('play',24)}</button><button class="vchip" data-act="edSoon">v${v} ${I('down',14)}</button><button class="ib" data-act="edSoon" aria-label="Compare">${I('compare',20)}</button><button class="ib" data-act="fullMode" aria-label="Full screen">${I('full',20)}</button></div>
   <div class="strip" id="strip"><div class="frames">${frames}</div><div id="pins"></div><div id="rng"></div><div class="ph" id="ph"></div></div>
   <div id="decide"></div>
   <div id="bottom"></div></div>`,
