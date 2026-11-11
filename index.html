@@ -365,6 +365,33 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .rev{padding:16px 0;border-bottom:1px solid #2A2A2E}
 [hidden]{display:none!important}
 .prow{position:relative;margin-top:16px}
+#sheet-host.notes .backdrop{background:transparent!important}
+#sheet-host.notes .sheet{height:392px;max-height:none;background:#1C1C1E;transition:transform .45s var(--ease),height .35s var(--ease)}
+#sheet-host.notes.tall .sheet{height:620px}
+#sheet-host.notes .grab{cursor:ns-resize;width:44px;margin-top:10px}
+.nhead{display:flex;align-items:center;margin:2px 0 4px}.nhead h3{flex:1;font:700 22px var(--ui)}
+.nseg{width:auto;border-radius:20px;padding:3px;background:#2a2a2e}.nseg button{height:32px;border-radius:17px;font:500 15px var(--ui);padding:0 16px}
+.nrow.n2{background:#1C1C1E;gap:14px;padding:16px 0;align-items:flex-start;border-bottom:1px solid #2c2c30}
+.nrow.n2 .nt{width:48px;height:64px;border-radius:6px}
+.nt .pdot{position:absolute;left:8px;bottom:12px;width:10px;height:10px;border-radius:50%;background:#8E6CFF;box-shadow:0 0 0 2px #fff}
+.nt .ring{position:absolute;left:8px;top:22px;width:30px;height:22px;border-radius:50%;border:2px solid #8E6CFF}
+.nwho{display:flex;align-items:center;gap:8px}.nwho b{font:600 16px var(--ui)}
+.ntime{font-size:14px;color:var(--grey)}
+.nfrom{font:700 12px var(--ui);color:#FFC94D;letter-spacing:.02em}
+.ntxt{font:400 17px/1.4 var(--ui);color:#fff;margin-top:6px}
+.nrow.n2 .att{border-radius:14px;height:26px;padding:0 10px;margin-top:8px}
+.nrep{display:flex;gap:8px;align-items:center;margin-top:10px;padding-left:10px;border-left:2px solid #3a3a42;color:var(--grey);font:400 15px var(--ui)}
+.nreply{display:block;margin-top:12px;font:500 15px var(--ui);color:#9a9aa2}
+.nrow.n2 .circ{width:28px;height:28px;border:1.5px solid #8a8a92}
+.nrow.n2 .circ.on{background:#3a3a40;border-color:#3a3a40;color:#fff}
+.nrow.n2.done{opacity:.35}
+.ndone{display:flex;align-items:center;gap:8px;margin:18px 0 0;font:500 15px var(--ui);color:var(--grey)}
+.nsw{position:relative;overflow:hidden}.nsw .nrow{touch-action:pan-y;transition:transform .3s var(--ease)}
+.ndel{position:absolute;right:0;top:0;bottom:0;width:88px;background:#E5484D;color:#fff;font:600 15px var(--ui)}
+.nsend{position:sticky;bottom:0;display:flex;gap:10px;align-items:center;padding:14px 0 6px;background:linear-gradient(transparent,#1C1C1E 35%)}
+.ntidy{display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 16px;border-radius:24px;background:#2a2a2e;font:600 15px var(--ui);flex:none}
+.nsendbtn{flex:1;height:54px;border-radius:28px;background:var(--violet);color:#000;font:900 24px var(--disp);letter-spacing:.02em;text-transform:uppercase;box-shadow:0 8px 28px rgba(142,108,255,.45)}
+
 .plink{display:flex;align-items:center;gap:10px;height:48px;margin-top:10px;padding:0 6px 0 14px;border-radius:12px;background:var(--surface)}.plink input{flex:1;min-width:0;background:none;border:0;outline:none;color:#fff;font:400 15px var(--ui)}.plink input::placeholder{color:var(--meta)}.plink button{height:36px;padding:0 12px;border-radius:8px;color:var(--violet)}
 .mrow{align-items:flex-start;gap:12px;padding-top:12px;padding-bottom:12px}.mrow .tx{min-width:0;flex:1}.mrow .lab{font-size:15px;white-space:nowrap}.mrow .mproj{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .mtxt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:400 14px/1.4 var(--ui);color:var(--grey);margin-top:3px}.mrow.u .mtxt{color:#eee}.mrow .dot{margin-top:24px}
@@ -542,10 +569,10 @@ function drawTabs(on){
 /* ================= sheet / toast / banner ================= */
 let sheetClose=null;
 function openSheet(html,onMount,onClose){
-  const host=$('#sheet-host'); $('.sbody',host).innerHTML=html; host.classList.add('open'); sheetClose=onClose||null;
+  const host=$('#sheet-host'); host.classList.remove('notes','tall'); $('.sbody',host).innerHTML=html; host.classList.add('open'); sheetClose=onClose||null;
   const b=$('.sbody',host); b.scrollTop=0; if(onMount) onMount(b);
 }
-function closeSheet(instant){ const host=$('#sheet-host'); if(!host.classList.contains('open')) return; host.classList.remove('open'); if(sheetClose){const f=sheetClose; sheetClose=null; f();} }
+function closeSheet(instant){ const host=$('#sheet-host'); if(!host.classList.contains('open')) return; if(host.classList.contains('notes')){const pl=$('#views .view:last-child .player');if(pl){pl.style.height='';pl.style.flex='';}} host.classList.remove('open'); if(sheetClose){const f=sheetClose; sheetClose=null; f();} }
 function toast(text,undo,icon=true){
   const host=$('#toast-host'); host.innerHTML='';
   const t=document.createElement('div'); t.className='toast';
@@ -605,7 +632,7 @@ V.profile=()=>({html:`<div class="scroll"><div class="topbar">${back_()}</div><d
 /* ---- creator home ---- */
 function homeRow(p){const [tg,c]=tagFor(p);
   const btn=p.newV?['Review','openReview','']:p.asks?['Answer','ask','']:['Reply','go',` data-to="thread" data-k="${p.ed}"`];
-  return `<div class="prow big" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><span class="tag ${c} rtag">${tg}</span><div class="cv34" style="${bg(p.img)}"><span class="cut">${I('cut',11,2)}${mmss(p.dur)}</span></div><div class="tx"><b>${p.title}</b><span class="meta" style="font-size:13px">${p.v?`v${p.v} · round ${p.round||p.v} of ${p.rounds||3}`:`Round 1 of ${p.rounds||3} · footage in, v1 next`}</span><div class="s">${av(p.ed,18)}<span>${p.sub}</span></div><span class="btn-card hbtn" data-act="${btn[1]}" data-id="${p.id}"${btn[2]}>${btn[0]}</span></div><button class="ib" style="width:30px;align-self:flex-start;margin-top:2px;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
+  return `<div class="prow big" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><span class="tag ${c} rtag">${tg}</span><div class="cv34" style="${bg(p.img)}"><span class="cut">${I('cut',11,2)}${mmss(p.dur)}</span></div><div class="tx"><b>${p.title}</b><span class="meta" style="font-size:13px">${p.v?`v${p.v} · round ${p.round||p.v} of ${p.rounds||3}`:`Round 1 of ${p.rounds||3} · footage in, v1 next`}</span><div class="s">${av(p.ed,18)}<span>${p.sub}</span></div></div><button class="ib" style="width:30px;align-self:flex-start;margin-top:2px;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
 function waitRow(p){return `<div class="row wrow" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><div class="cv34 sm" style="${bg(p.img)}"><span class="cut">${mmss(p.dur)}</span></div><span class="tx"><b class="lab">${p.title}</b><div class="meta">${p.sub}</div></span>${av(p.ed,24)}<button class="ib" style="width:30px;margin-right:-6px;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
 V.home=()=>{
   const prog=S.projects.filter(p=>p.status==='progress');
@@ -696,7 +723,7 @@ V.review=({id})=>{const p=proj(id);
  return {html:`<div class="rvfix">
   <div class="topbar">${back_()}<div class="tt" data-act="editName" data-id="${p.id}" style="cursor:pointer"><b>${p.title}</b><span>${av(canNoteP(p)?'M':p.ed,16)}${sub}</span></div><button class="ib" data-act="${p.v?'download':'noop'}" data-id="${p.id}" aria-label="Download v${p.v}" ${p.v?'':'style="opacity:.3"'}>${I('dl',22)}</button><button class="ib" data-act="details" data-id="${p.id}" aria-label="Project details">${I('more')}</button></div>
   <div class="player f" id="player"><div class="vid ${p.v?'':'empty'}" id="vid">${p.v?`<img src="${IMG(p.vimg)}" alt="Video frame of ${p.title}">`:`<div class="vempty">${MARK(46,'#3a3a42')}<b class="lab">v1 isn’t here yet</b><span class="meta">${edName(p)} is cutting the first version</span></div>`}<img class="drawov" id="drawov" alt="" hidden><div id="bubbles"></div>${p.v?`<button class="pbtn" data-act="playpause" aria-label="Play">${I('play',30)}</button>`:''}</div></div>
-  <div class="timerow"><span class="mono" id="tm">0:02 / ${fmt(p.dur)}</span><span style="flex:1"></span><button class="ib" data-act="${p.v?'playpause':'noop'}" id="pp" aria-label="Play" ${p.v?'':'style="opacity:.3"'}>${I('play',24)}</button><button class="vchip" data-act="${p.v?'versions':'noop'}" data-id="${p.id}">${p.v?`v${p.v} ${I('down',14)}`:'No video yet'}</button>${p.v>1?`<button class="ib" data-act="compareMode" aria-label="Compare">${I('compare',20)}</button>`:''}</div>
+  <div class="timerow"><span class="mono" id="tm">0:02 / ${fmt(p.dur)}</span><span style="flex:1"></span><button class="ib" data-act="${p.v?'playpause':'noop'}" id="pp" aria-label="Play" ${p.v?'':'style="opacity:.3"'}>${I('play',24)}</button><button class="vchip" data-act="${p.v?'versions':'noop'}" data-id="${p.id}">${p.v?`v${p.v} ${I('down',14)}`:'No video yet'}</button>${p.v>1?`<button class="ib" data-act="compareMode" aria-label="Compare">${I('compare',20)}</button>`:''}${p.v?`<button class="ib" data-act="fullMode" aria-label="Full screen">${I('full',20)}</button>`:''}</div>
   <div class="strip" id="strip"><div class="frames">${frames}</div><div id="pins"></div><div id="rng"></div><div class="ph" id="ph"></div></div>
   <div id="decide"></div>
   <div id="bottom"></div></div>`,
@@ -741,16 +768,26 @@ function addNoteAt(att,draft){const p=rvP();if(RV.playing)act.playpause();const 
  <p class="kbd-hint">The arrow button adds it to your notes. ${edName(p)} sees nothing until you press Send.</p>`,bx=>setTimeout(()=>$('#nt',bx).focus(),350),()=>{RV&&(RV.pend=null);});}
 function detailsSheet(id){const p=proj(id);const rows=[['compare','Versions',`v${p.v} current${p.v>1?' · v'+(p.v-1):''}${p.v>2?' · v1':''}`,'versions'],['footage','Footage','6 clips · received','footage'],['list','Brief and references','2 reference videos','brief'],['cover','Cover and caption','Auto: frame at 0:21 · tap to change','coverpick'],['money','Money',`$${p.price||75} · $${(p.price||75)/2} on approval`,'money'],['people','People',`You + ${edName(p)} · Share link to invite`,'people']];
  openSheet(`<h3 class="t20" style="margin:4px 0 4px">${p.title}</h3><p class="meta" style="margin:0">Round ${Math.max(p.round,1)} of ${p.rounds} · ${p.rounds-Math.max(p.round,1)} left</p>${pathHTML(p)}<div class="rows" style="margin-top:12px">${rows.map(([i,t,s,a])=>`<button class="row" data-act="detailRow" data-a="${a}" data-id="${p.id}"><span style="color:#fff">${I(i,22)}</span><span class="tx"><b class="lab" style="font-size:15px">${t}</b><div class="meta">${s}</div></span>${I('chev',18)}</button>`).join('')}</div><button class="meta" style="display:block;margin:14px auto 0" data-act="more" data-id="${p.id}">Rename, archive or delete</button>`);}
-function notesSheet(tab='send'){const p=rvP()||proj('mr');const ed=edName(p);
- const send=p.drafts, all=p.all;
- const row=(d,i)=>`<div class="nrow" data-nid="${d.id}"><div class="nt" style="${bg(p.vimg)};background-position:${(d.t*7)%100}% 40%">${av('M',18)}</div><div style="flex:1;min-width:0"><span class="mono" style="font-size:13px;color:var(--grey)">${fmtR(d)}</span><div class="t15" style="margin-top:2px;cursor:pointer" data-txt data-act="editDraft" data-nid="${d.id}">${esc(d.text)}</div>${d.draw?`<div class="drawthumb"><img src="${IMG(p.vimg)}" alt=""><img src="${d.draw}" alt=""></div>`:d.att?`<span class="att">${I(d.att==='Drawing'?'pen':d.att==='Voice'?'mic':d.att==='Range'?'range':'image',12)}${d.att}</span>`:''}</div><button class="ib" style="width:32px;height:32px;color:var(--grey)" data-act="delNote" data-nid="${d.id}" aria-label="Delete">${I('trash',18,1.6)}</button></div>`;
- const arow=d=>`<div class="nrow ${d.done?'done':''}" style="align-items:flex-start"><div class="nt" style="${bg(p.vimg)}">${av(d.by,18)}</div><div style="flex:1;min-width:0"><div style="display:flex;gap:8px;align-items:center"><b class="lab">${d.by==='M'?'You':PPL[d.by].n}</b><span class="mono" style="font-size:13px;color:var(--grey)">${fmt(d.t)}</span>${d.v<p.v?`<span class="meta" style="color:var(--violet)">FROM V${d.v}</span>`:''}</div><div class="t15" style="margin-top:2px">${esc(d.text)}</div>${d.reply?`<div style="display:flex;gap:6px;align-items:center;margin-top:8px" class="meta">${av(d.reply.by,16)}${esc(d.reply.text)}</div>`:''}${!d.done?`<button class="meta" style="margin-top:8px;color:#fff" data-act="replyNote" data-nid="${d.id}">Reply</button>`:''}</div><button class="circ ${d.done?'on':''}" data-act="tickNote" data-nid="${d.id}" aria-label="Mark done">${d.done?I('check',14,2.6):''}</button></div>`;
+function notesSheet(tab='send'){const p=rvP()||proj('mr');const ed=edName(p);const host=$('#sheet-host');const tall=host.classList.contains('tall');
+ const send=p.drafts, all=p.all.filter(d=>!NV||d.v===NV);
+ const thumb=d=>`<div class="nt" style="${bg(p.vimg)};background-position:${(d.t*9)%100}% 40%">${d.draw||d.att==='Drawing'?'<i class="ring"></i>':'<i class="pdot"></i>'}</div>`;
+ const chip=d=>d.att?`<span class="att">${I(d.att==='Drawing'?'pen':d.att==='Voice'?'mic':d.att==='Range'?'range':'image',12)}${d.att}</span>`:'';
+ const row=d=>`<div class="nsw" data-nid="${d.id}"><button class="ndel" data-act="delNote" data-nid="${d.id}">Delete</button><div class="nrow n2">${thumb(d)}<div style="flex:1;min-width:0"><span class="mono ntime">${fmtR(d)}</span><div class="ntxt" data-txt>${esc(d.text)}</div>${chip(d)}</div><button class="ib" style="width:32px;height:32px;color:#ddd" data-act="editDraft" data-nid="${d.id}" aria-label="Edit">${I('pen',20,1.6)}</button></div></div>`;
+ const arow=d=>`<div class="nrow n2 ${d.done?'done':''}">${thumb(d)}<div style="flex:1;min-width:0"><div class="nwho">${av(d.by,20)}<b>${d.by==='M'?'You':PPL[d.by].n}</b><span class="mono ntime">${fmt(d.t)}</span>${d.v<p.v&&!d.done?`<span class="nfrom">FROM V${d.v} · OPEN</span>`:''}</div><div class="ntxt">${esc(d.text)}</div>${chip(d)}${d.reply?`<div class="nrep">${av(d.reply.by,18)}<span>${esc(d.reply.text)}</span></div>`:''}${!d.done?`<button class="nreply" data-act="replyNote" data-nid="${d.id}">Reply</button>`:''}</div><button class="circ ${d.done?'on':''}" data-act="tickNote" data-nid="${d.id}" aria-label="${d.done?'Reopen':'Mark done'}">${d.done?I('check',16,2.4):''}</button></div>`;
  const openA=all.filter(x=>!x.done), doneA=all.filter(x=>x.done);
- openSheet(`<div style="display:flex;align-items:center;margin:2px 0 10px"><h3 class="t20" style="flex:1">Notes</h3><div class="seg" style="width:190px"><button class="${tab==='send'?'on':''}" data-act="notesTab" data-t="send">To send ${send.length}</button><button class="${tab==='all'?'on':''}" data-act="notesTab" data-t="all">All ${all.length}</button></div></div>
- ${tab==='send'?`<p class="meta" style="margin:0 0 2px">Drafts on v${p.v} · only you see them</p><div id="nlist">${send.map(row).join('')||`<div class="empty">No drafts yet. Tap the video to pin a note.</div>`}</div>
- <div style="display:flex;gap:10px;align-items:center;margin-top:16px">${send.length?`<button class="btn-sec" data-act="tidy">${I('spark',16)}Tidy up</button><button class="btn-main" style="flex:1" data-act="sendNotes">Send ${send.length} note${send.length>1?'s':''} to ${ed}</button>`:`<button class="btn-main" data-act="approve">Approve v${p.v}</button>`}</div>${send.length?`<button class="meta" style="display:block;margin:12px auto 0" data-act="approve">Happy with v${p.v}? Approve it instead</button>`:''}`
- :`<div>${openA.map(arow).join('')}</div>${doneA.length?`<div class="sec"><span>Done · ${doneA.length}</span></div><div>${doneA.map(arow).join('')}</div>`:''}`}`);}
-
+ const vers=[...new Set(p.all.map(d=>d.v))].sort();
+ openSheet(`<div class="nhead"><h3>Notes</h3><div class="seg nseg"><button class="${tab==='send'?'on':''}" data-act="notesTab" data-t="send">To send ${send.length}</button><button class="${tab==='all'?'on':''}" data-act="notesTab" data-t="all">All ${p.all.length}</button></div></div>
+ ${tab==='send'?`<p class="meta" style="margin:2px 0 0">Drafts on v${p.v} · only you see them</p><div id="nlist">${send.map(row).join('')||`<div class="empty">No drafts yet. Tap the video to pin a note.</div>`}</div><div style="height:${send.length?84:10}px"></div>
+ ${send.length?`<div class="nsend"><button class="ntidy" data-act="tidy">${I('spark',16)}Tidy up</button><button class="nsendbtn" data-act="sendNotes">Send ${send.length} note${send.length>1?'s':''} to ${ed}</button></div>`:`<div class="nsend"><button class="nsendbtn" data-act="approve">Approve v${p.v}</button></div>`}`
+ :`${tall?`<button class="vchip" style="margin:4px 0 2px" data-act="nVer">${NV?'v'+NV:'All versions'} ${I('down',14)}</button>`:''}<div>${openA.map(arow).join('')||'<div class="empty">Nothing open.</div>'}</div>${doneA.length?`<button class="ndone" data-act="nDoneTog">Done · ${doneA.length} <span style="display:flex;transform:rotate(${S.doneOpen?180:0}deg)">${I('down',16)}</span></button>${S.doneOpen?`<div>${doneA.map(arow).join('')}</div>`:''}`:''}<div style="height:20px"></div>`}`,
+ b=>{ $$('.nsw',b).forEach(w=>{const r=$('.nrow',w);let x0=null,dx=0,open=false;
+   r.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;x0=e.clientX;r.style.transition='none';});
+   r.addEventListener('pointermove',e=>{if(x0==null)return;dx=Math.min(0,Math.max(-96,e.clientX-x0+(open?-88:0)));r.style.transform=`translateX(${dx}px)`;});
+   const end=()=>{if(x0==null)return;x0=null;r.style.transition='';open=dx<-44;r.style.transform=open?'translateX(-88px)':'';};
+   r.addEventListener('pointerup',end);r.addEventListener('pointerleave',end);});});
+ host.classList.add('notes');if(tall)host.classList.add('tall');fitNotes();}
+function fitNotes(){const v=$('#views .view:last-child');const pl=v&&$('.player',v),tr=v&&$('.timerow',v),ph=$('#phone');if(!pl||!tr)return;const k=ph.offsetHeight/ph.getBoundingClientRect().height;if(!pl.dataset.h0)pl.dataset.h0=pl.offsetHeight;const bottom=(tr.getBoundingClientRect().bottom-ph.getBoundingClientRect().top)*k+(+pl.dataset.h0-pl.offsetHeight);const need=392-(844-bottom)+4;pl.style.transition='height .35s var(--ease)';pl.style.flex=need>0?'none':'';pl.style.height=need>0?(+pl.dataset.h0-need)+'px':'';}
+let NV=0;
 /* ---- final / post ---- */
 V.final=({id='mr'})=>{const p=proj(id);return {html:`<div class="scroll">${topbar(p.title,`v${p.v} approved`,`<button class="ib" aria-label="Share">${I('share',22)}</button>`)}<div class="pad">
   <div style="position:relative;border-radius:10px;overflow:hidden;aspect-ratio:9/12"><img src="${IMG(p.vimg)}" style="width:100%;height:100%;object-fit:cover" alt=""><span class="tag green" style="position:absolute;left:10px;top:12px">Approved · final</span><button style="position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center">${I('play',28)}</button></div>
@@ -846,7 +883,7 @@ V['ed-home']=()=>{const E=S.ed;const left=E.todo.filter(x=>!x.done).length;const
   ...(E.accepted?[{img:'mk4',dur:42,title:'Street food tour',l2:'Round 1 of 3 · footage arrives Mon',sub:'First cut due Fri, Nov 14',tag:['NEW','green'],btn:'Get footage'}]:[]),
   {img:'cafe',dur:112,title:'Café opening',l2:'v2 · round 2 of 3',sub:'Waiting on Maya’s answer',tag:['YOU ASKED +1 DAY','yellow']},
   {img:'wed',dur:138,title:'Wedding teaser',l2:'Round 1 of 3 · footage not in yet',sub:'Maya is shooting this weekend',tag:null}];
- const big=r=>`<div class="prow big" ${r.go?`data-act="go" data-to="${r.go}"`:`data-act="edSoon"`} role="button" tabindex="0">${r.tag?`<span class="tag ${r.tag[1]} rtag">${r.tag[0]}</span>`:''}<div class="cv34" style="${bg(r.img)}"><span class="cut">${I('cut',11,2)}${mmss(r.dur)}</span></div><div class="tx"><b>${r.title}</b><span class="meta" style="font-size:13px">${r.l2}</span><div class="s">${av('M',18)}<span>${r.sub}</span></div><span class="btn-card hbtn">${r.btn}</span></div><button class="ib" style="width:30px;align-self:flex-start;margin-top:2px;color:var(--grey)" aria-label="More">${I('more',20)}</button></div>`;
+ const big=r=>`<div class="prow big" ${r.go?`data-act="go" data-to="${r.go}"`:`data-act="edSoon"`} role="button" tabindex="0">${r.tag?`<span class="tag ${r.tag[1]} rtag">${r.tag[0]}</span>`:''}<div class="cv34" style="${bg(r.img)}"><span class="cut">${I('cut',11,2)}${mmss(r.dur)}</span></div><div class="tx"><b>${r.title}</b><span class="meta" style="font-size:13px">${r.l2}</span><div class="s">${av('M',18)}<span>${r.sub}</span></div></div><button class="ib" style="width:30px;align-self:flex-start;margin-top:2px;color:var(--grey)" aria-label="More">${I('more',20)}</button></div>`;
  const small=r=>`<div class="row wrow" data-act="edSoon" role="button" tabindex="0"><div class="cv34 sm" style="${bg(r.img)}"><span class="cut">${mmss(r.dur)}</span></div><span class="tx"><b class="lab">${r.title}</b><div class="meta">${r.sub}</div></span>${av('M',24)}<button class="ib" style="width:30px;margin-right:-6px;color:var(--grey)" aria-label="More">${I('more',20)}</button></div>`;
  return {tab:'ed-home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" aria-label="Activity">${I('bell')}</button></div></div>
  <div class="scroll" style="padding-top:101px;padding-bottom:110px"><div class="pad">
@@ -883,11 +920,13 @@ function edDraw(){const E=S.ed,p=proj('mr');const left=E.todo.filter(x=>!x.done)
  dc.innerHTML=E.uploaded?dbar('v4 sent to Maya','$37.50 earned · she’s reviewing',`<button class="btn-sec sm" data-act="simApprove">${I('bolt',16)}Demo: approve</button>`,'M')
   :dbar(`${E.todo.length} notes · ${E.todo.length-left} fixed`,left?`${left} open · v4 due Fri`:'All fixed · ready for v4',`<button class="dbtn" data-act="edUpload">Upload v4</button>`,'M');
  b.innerHTML=`<div class="tools">${[['upload','Upload','edUpload'],['footage','Footage','edFootage'],['list','Brief','edBrief'],['chat','Reply','edReply']].map(([i,l,a])=>`<button class="tl" data-act="${a}" ${a==='edUpload'&&E.uploaded?'disabled':''}>${I(i,24,1.6)}${l}</button>`).join('')}<button class="notesbtn" data-act="edNotes">Notes ${left?`<span class="badge">${left}</span>`:''}</button></div>`;}
-function edNotesSheet(){const E=S.ed;const left=E.todo.filter(x=>!x.done).length;
- openSheet(`<div style="display:flex;align-items:center;margin:2px 0 4px"><h3 class="t20" style="flex:1">Maya’s notes</h3><span class="meta">${E.todo.length-left} of ${E.todo.length} fixed</span></div><p class="meta" style="margin:0 0 4px">Tick a note when it’s fixed · tap the time to jump there</p>
- <div class="bar" style="margin:8px 0 6px"><i style="width:${(E.todo.length-left)/E.todo.length*100}%"></i></div>
- ${E.todo.map(d=>`<div class="nrow ${d.done?'done':''}" style="align-items:flex-start"><button class="circ ${d.done?'on':''}" data-act="edTick" data-nid="${d.id}" aria-label="Mark fixed">${d.done?I('check',14,2.6):''}</button><div style="flex:1"><div style="display:flex;gap:8px;align-items:center">${av('M',18)}<button class="mono" style="font-size:13px;color:var(--grey)" data-act="edSeek" data-t="${d.t}">v${d.v} · ${fmt(d.t)}</button></div><div class="t15" style="margin-top:3px">${esc(d.text)}</div>${d.reply?`<div class="meta" style="display:flex;gap:6px;align-items:center;margin-top:6px">${av('L',16)}${esc(d.reply)}</div>`:''}</div></div>`).join('')}
- ${E.uploaded?'':`<div style="margin-top:16px"><button class="btn-main" data-act="edUpload">${I('upload',18,2)} Upload v4${left?` · ${left} still open`:''}</button></div>`}`);}
+function edNotesSheet(){const E=S.ed;const left=E.todo.filter(x=>!x.done).length;const p=proj('mr');
+ const row=d=>`<div class="nrow n2 ${d.done?'done':''}"><div class="nt" style="${bg(p.vimg)};background-position:${(d.t*9)%100}% 40%"><i class="pdot"></i></div><div style="flex:1;min-width:0"><div class="nwho">${av('M',20)}<b>Maya</b><button class="mono ntime" data-act="edSeek" data-t="${d.t}">${fmt(d.t)}</button>${d.v<3&&!d.done?`<span class="nfrom">FROM V${d.v} · OPEN</span>`:''}</div><div class="ntxt">${esc(d.text)}</div>${d.reply?`<div class="nrep">${av('L',18)}<span>${esc(d.reply)}</span></div>`:''}${!d.done?`<button class="nreply" data-act="edReply">Reply</button>`:''}</div><button class="circ ${d.done?'on':''}" data-act="edTick" data-nid="${d.id}" aria-label="Mark fixed">${d.done?I('check',16,2.4):''}</button></div>`;
+ const open=E.todo.filter(d=>!d.done),done=E.todo.filter(d=>d.done);
+ openSheet(`<div class="nhead"><h3>Maya’s notes</h3><span class="meta">${done.length} of ${E.todo.length} fixed</span></div>
+ <div>${open.map(row).join('')||'<div class="empty">All fixed.</div>'}</div>${done.length?`<button class="ndone" data-act="nDoneTogE">Fixed · ${done.length} <span style="display:flex;transform:rotate(${S.doneOpenE?180:0}deg)">${I('down',16)}</span></button>${S.doneOpenE?`<div>${done.map(row).join('')}</div>`:''}`:''}<div style="height:${E.uploaded?20:84}px"></div>
+ ${E.uploaded?'':`<div class="nsend"><button class="nsendbtn" data-act="edUpload">Upload v4${left?` · ${left} open`:''}</button></div>`}`);
+ $('#sheet-host').classList.add('notes');fitNotes();}
 function edUploadSheet(){const E=S.ed;const left=E.todo.filter(x=>!x.done).length;
  openSheet(`<h3 class="t20" style="margin:2px 0 4px">Upload v4</h3><p class="meta" style="margin:0 0 14px">Morning routine · round 2 of 3 · Maya gets it right away</p>
  <button class="card" data-act="uploadV4" style="width:100%;border:1.5px dashed #3a3a42;background:transparent;padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;border-radius:12px">${I('upload',28,1.6)}<b class="lab" style="font-size:16px">Choose from your phone</b><span class="meta">Photos or Files · .mov .mp4 · up to 4 GB</span></button>
@@ -981,7 +1020,10 @@ const act={
  details(el){detailsSheet(el.dataset.id);},
  detailRow(el){const a=el.dataset.a,id=el.dataset.id;closeSheet(true);setTimeout(()=>act[a]({dataset:{id}}),a==='versions'||a==='money'||a==='people'?380:0);},
  notesTab(el){notesSheet(el.dataset.t);},
- delNote(el){const p=rvP();const id=+el.dataset.nid;const r=el.closest('.nrow');r.style.transform='translateX(-110%)';r.style.opacity=0;setTimeout(()=>{const i=p.drafts.findIndex(d=>d.id===id);const [d]=p.drafts.splice(i,1);const pi=p.pins.findIndex(x=>x.t===d.t&&x.by==='M');if(pi>-1)p.pins.splice(pi,1);notesSheet('send');drawPins();drawBottom();toast('Note deleted',()=>{p.drafts.splice(i,0,d);p.pins.push({t:d.t,by:'M'});drawPins();drawBottom();});},300);},
+ nVer(){const p=rvP();const vs=[0,...new Set(p.all.map(d=>d.v))].sort();NV=vs[(vs.indexOf(NV)+1)%vs.length];notesSheet('all');},
+ nDoneTogE(){S.doneOpenE=!S.doneOpenE;edNotesSheet();},
+ nDoneTog(){S.doneOpen=!S.doneOpen;notesSheet('all');},
+ delNote(el){const p=rvP();const id=+el.dataset.nid;const r=el.closest('.nsw')||el.closest('.nrow');r.style.transform='translateX(-110%)';r.style.opacity=0;setTimeout(()=>{const i=p.drafts.findIndex(d=>d.id===id);const [d]=p.drafts.splice(i,1);const pi=p.pins.findIndex(x=>x.t===d.t&&x.by==='M');if(pi>-1)p.pins.splice(pi,1);notesSheet('send');drawPins();drawBottom();toast('Note deleted',()=>{p.drafts.splice(i,0,d);p.pins.push({t:d.t,by:'M'});drawPins();drawBottom();});},300);},
  tickNote(el){const p=rvP();const d=p.all.find(x=>x.id===+el.dataset.nid);d.done=!d.done;el.classList.toggle('on',d.done);el.innerHTML=d.done?I('check',14,2.6):'';tick();setTimeout(()=>notesSheet('all'),380);if(d.done)toast('Marked done',()=>{d.done=false;notesSheet('all');});},
  async tidy(el){const p=rvP();const txts=$$('[data-txt]');txts.forEach(t=>t.classList.add('shimmer'));el.disabled=true;await sleep(1200);
   const short={'Cut the intro to about 3 seconds.':'Intro: 3 s max.','Slow down the coffee pour — hold 2 s longer.':'Hold the pour +2 s.','Use this kind of ending shot.':'End like the reference shot.'};
@@ -1119,8 +1161,8 @@ document.addEventListener('input',e=>{if(e.target.id==='aq'){const q=e.target.va
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role="button"][data-act]')){e.preventDefault();e.target.click();} });
 // drag sheet down to close
 (()=>{const sh=$('.sheet');let y0=null,dy=0;$('.grab').addEventListener('pointerdown',e=>{y0=e.clientY;sh.style.transition='none';$('.grab').setPointerCapture(e.pointerId);});
- $('.grab').addEventListener('pointermove',e=>{if(y0==null)return;dy=Math.max(0,e.clientY-y0);sh.style.transform=`translateY(${dy}px)`;});
- $('.grab').addEventListener('pointerup',()=>{sh.style.transition='';sh.style.transform='';if(dy>90)closeSheet();y0=null;dy=0;});})();
+ $('.grab').addEventListener('pointermove',e=>{if(y0==null)return;dy=e.clientY-y0;if(dy<0){if(dy<-40&&$('#sheet-host').classList.contains('notes'))$('#sheet-host').classList.add('tall');return;}sh.style.transform=`translateY(${dy}px)`;});
+ $('.grab').addEventListener('pointerup',()=>{sh.style.transition='';sh.style.transform='';const h=$('#sheet-host');if(h.classList.contains('notes')&&Math.abs(dy)<6){h.classList.toggle('tall');if(h.classList.contains('tall')&&$('.nseg .on[data-t=all]'))notesSheet('all');}else if(dy>90){if(h.classList.contains('tall')){h.classList.remove('tall');}else closeSheet();}y0=null;dy=0;});})();
 
 /* ================= keep the phone fixed + fit to window ================= */
 (()=>{const ph=$('#phone');['#phone','#views'].forEach(sel=>{const n=$(sel);n.addEventListener('scroll',()=>{n.scrollTop=0;n.scrollLeft=0;});});
