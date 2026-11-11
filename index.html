@@ -330,8 +330,13 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .hnd.r{left:auto;right:-11px}
 .hnd::after{content:"";position:absolute;left:7px;top:13px;width:4px;height:16px;border-left:1.5px solid #000;border-right:1.5px solid #000;pointer-events:none}
 #decide{flex:none}
-.dbar{display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 16px;background:var(--surface);animation:voicein .25s var(--ease)}
-.dbar .lab{display:flex;align-items:center;gap:6px}
+.dbar{display:flex;align-items:center;gap:12px;min-height:76px;padding:14px 12px 14px 16px;background:#141414;border-top:1px solid #222;animation:voicein .25s var(--ease)}
+.dbar .lab{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:600 16px/1.25 var(--ui)}.dbar .lab>*{flex:none}.dbar .meta{font-size:14px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dbar .avatar,.dbar>span:first-child{flex:none}
+.dav{width:40px;height:40px;border-radius:50%;background:#2a2a2e;color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.dbtn{flex:none;height:44px;padding:0 14px;border-radius:10px;background:var(--violet);color:#000;font:900 21px var(--disp);letter-spacing:.03em;text-transform:uppercase;margin-left:4px}
+.dbtn:active{transform:scale(.97)}
+.dbar .dx{width:34px;height:40px;color:#8a8a90;flex:none;margin-left:-2px}
 .btn-out{height:40px;padding:0 16px;border-radius:10px;border:1.5px solid #fff;font:800 17px var(--disp);letter-spacing:.04em;text-transform:uppercase}
 .voicebar.f{margin:0;border-radius:0;min-height:64px;padding:10px 16px}
 .vmic{width:40px;height:40px;border-radius:50%;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;flex:none;animation:vpulse 1.4s ease-in-out infinite}
@@ -360,6 +365,14 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
 .rev{padding:16px 0;border-bottom:1px solid #2A2A2E}
 [hidden]{display:none!important}
 .prow{position:relative;margin-top:16px}
+.mrow{align-items:flex-start;gap:12px;padding-top:12px;padding-bottom:12px}.mrow .tx{min-width:0;flex:1}.mrow .lab{font-size:15px;white-space:nowrap}.mrow .mproj{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mtxt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:400 14px/1.4 var(--ui);color:var(--grey);margin-top:3px}.mrow.u .mtxt{color:#eee}.mrow .dot{margin-top:24px}
+
+.prow.big{padding:12px}.prow.big .cv34{width:76px}.prow.big .tx{gap:5px}.prow.big .tx b{font-size:17px}
+.hbtn{height:32px!important;font-size:16px!important;padding:0 14px!important;margin-top:4px}
+.wrow{gap:12px}.wrow .tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wrow .tx .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv34.sm{width:40px;border-radius:6px}.cv34.sm .cut{left:2px;right:2px;bottom:2px;height:13px;font-size:8px;border-radius:3px}
+
 .prow .rtag{position:absolute;top:-9px;right:14px;height:20px;font-size:12px;padding:0 10px;z-index:2}
 .cv34 .cut{position:absolute;left:4px;right:4px;bottom:4px;display:flex;align-items:center;justify-content:center;gap:2px;height:17px;border-radius:5px;background:rgba(0,0,0,.6);font:500 10px var(--mono);color:#fff}
 .stars{display:inline-flex;gap:2px;vertical-align:middle}.stars svg{width:15px;height:15px}.stars svg{display:block}
@@ -382,7 +395,7 @@ textarea.field{resize:none;min-height:92px;line-height:1.45}
     <button data-act="jump" data-to="project"><span class="n">03</span>Project · v3 to review</button>
     <button data-act="jump" data-to="doneproj"><span class="n">04</span>Done project · download + post</button>
     <button data-act="jump" data-to="all"><span class="n">06</span>All projects + filter</button>
-    <button data-act="jump" data-to="activity"><span class="n">07</span>Activity</button>
+    <button data-act="jump" data-to="activity"><span class="n">07</span>Messages inbox</button>
     <h2>Editor</h2>
     <button data-act="jump" data-to="ed-home"><span class="n">08</span>Editor home + invite</button>
     <button data-act="jump" data-to="ed-project"><span class="n">09</span>Notes to-do → upload v4</button>
@@ -461,6 +474,7 @@ function freshState(){
       {id:'c3',title:'Picnic with Mochi',type:'Vlog',img:'c3',vimg:'c3',ed:'J',status:'done',v:3,dur:126,sub:'Done · Oct 12',pins:[],drafts:[],all:[]},
       {id:'c4',title:'Rainy night walk',type:'Travel',img:'c4',vimg:'c4',ed:'L',status:'done',v:2,dur:58,sub:'Posted · Oct 2',pins:[],drafts:[],all:[]},
     ],
+    inbox:[{by:'L',last:'Park',proj:'Morning routine',t:'v3 is up. Tightened the intro and swapped the music.',time:'2h',id:'mr',go:'openReview',u:1},{by:'L',last:'Park',proj:'Café opening',t:'Could I have one more day for the colour pass?',time:'3h',id:'cafe',go:'ask',u:1},{by:'S',last:'Kim',t:'Yes, I can do 2 days for $75.',time:'5h',u:1},{by:'J',last:'Diaz',proj:'Product unboxing',t:'Started editing. First cut by Mon.',time:'Yesterday',id:'pu'},{by:'L',last:'Park',proj:'Wedding teaser',t:'Two quick questions about the vows part.',time:'Mon',id:'wed'},{by:'M',last:'',proj:'Latte afternoon',t:'You approved it · $45 released to Leo',time:'Oct 30',id:'c1'}],
     activity:[{by:'L',t:'Leo uploaded v3',p:'Morning routine · 2 h ago',tag:['NEW · V3','green'],act:['Review v3','review','mr'],unread:true},{by:'L',t:'Leo asks for 1 more day',p:'Café opening · wants until Sat',tag:['LEO ASKS +1 DAY','yellow'],act:['Answer','ask','cafe'],unread:true},{by:'J',t:'Jon started editing',p:'Product unboxing · yesterday'},{by:'L',t:'Leo sent 2 questions',p:'Wedding teaser · Mon'},{by:'M',t:'You approved Latte afternoon',p:'$45 released to Leo · Oct 30',tag:['DONE','grey']}],
     msgs:{L:[{me:0,t:'Hey Maya! Got the footage, starting tonight.'},{me:1,t:'Amazing, thank you 🙏'},{me:0,t:'Sent you my storefront link.'}],S:[{me:0,t:'Yes, I can do 2 days for $75.'}],J:[{me:0,t:'You hired Jon · Product unboxing'}]},
     ed:{ // editor side
@@ -588,29 +602,33 @@ V.profile=()=>({html:`<div class="scroll"><div class="topbar">${back_()}</div><d
   <div class="pad" style="padding-bottom:40px"><button class="btn-main" data-act="profileDone">Continue</button></div>`});
 
 /* ---- creator home ---- */
-function homeRow(p){const [tg,c]=tagFor(p);const need=p.newV||p.asks||p.turn==='me';
-  return `<div class="prow" data-act="openProject" data-id="${p.id}" role="button" tabindex="0">${need?`<span class="tag ${c} rtag">${tg}</span>`:''}<div class="cv34" style="${bg(p.img)}"><span class="cut">${I('cut',11,2)}${mmss(p.dur)}</span></div><div class="tx"><b>${p.title}</b><span class="meta" style="font-size:13px">${p.v?`v${p.v} · round ${p.round||p.v} of ${p.rounds||3}`:`Round 1 of ${p.rounds||3} · footage in, v1 next`}</span><div class="s">${av(p.ed,18)}<span>${p.sub}</span></div></div><button class="ib" style="width:30px;align-self:center;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
+function homeRow(p){const [tg,c]=tagFor(p);
+  const btn=p.newV?['Review','openReview','']:p.asks?['Answer','ask','']:['Reply','go',` data-to="thread" data-k="${p.ed}"`];
+  return `<div class="prow big" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><span class="tag ${c} rtag">${tg}</span><div class="cv34" style="${bg(p.img)}"><span class="cut">${I('cut',11,2)}${mmss(p.dur)}</span></div><div class="tx"><b>${p.title}</b><span class="meta" style="font-size:13px">${p.v?`v${p.v} · round ${p.round||p.v} of ${p.rounds||3}`:`Round 1 of ${p.rounds||3} · footage in, v1 next`}</span><div class="s">${av(p.ed,18)}<span>${p.sub}</span></div><span class="btn-card hbtn" data-act="${btn[1]}" data-id="${p.id}"${btn[2]}>${btn[0]}</span></div><button class="ib" style="width:30px;align-self:flex-start;margin-top:2px;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
+function waitRow(p){return `<div class="row wrow" data-act="openProject" data-id="${p.id}" role="button" tabindex="0"><div class="cv34 sm" style="${bg(p.img)}"><span class="cut">${mmss(p.dur)}</span></div><span class="tx"><b class="lab">${p.title}</b><div class="meta">${p.sub}</div></span>${av(p.ed,24)}<button class="ib" style="width:30px;margin-right:-6px;color:var(--grey)" data-act="more" data-id="${p.id}" aria-label="More">${I('more',20)}</button></div>`;}
 V.home=()=>{
   const prog=S.projects.filter(p=>p.status==='progress');
   const order=p=>p.newV?0:p.asks?1:p.turn==='me'?2:3;
-  const list=[...prog].sort((a,b)=>order(a)-order(b));
+  const need=p=>p.newV||p.asks||p.turn==='me';
+  const mine=[...prog].filter(need).sort((a,b)=>order(a)-order(b)),rest=prog.filter(p=>!need(p));
   const done=S.projects.filter(p=>p.status==='done');
-  const unread=S.activity.filter(a=>a.unread).length;
-  return {tab:'home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" data-act="go" data-to="activity" aria-label="Activity" style="position:relative">${I('bell')}${unread?`<i style="position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#fff"></i>`:''}</button></div></div>
+  const unread=S.inbox.filter(m=>m.u).length;
+  return {tab:'home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" data-act="go" data-to="activity" aria-label="Messages" style="position:relative">${I('chat')}${unread?`<i style="position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#fff"></i>`:''}</button></div></div>
   <div class="scroll" style="padding-top:101px;padding-bottom:110px"><div class="pad">
    <button class="btn-main" data-act="go" data-to="newproject">${I('plus',20,2.6)} New project</button>
    <div class="sec" style="margin-top:24px"><span>In progress · ${prog.length}</span><button data-act="seeProg">See all ›</button></div>
-   <div class="stag">${list.map(homeRow).join('')}</div>
+   <div class="stag">${mine.map(homeRow).join('')}</div>
+   <div class="list" style="margin-top:${mine.length?18:0}px">${rest.map(waitRow).join('')}<button class="row" data-act="seeProg" style="justify-content:center;gap:4px"><b class="lab">See all ${prog.length} in progress</b>${I('chev',16)}</button></div>
    <button class="row" style="margin-top:16px" data-act="tab" data-to="market"><span style="color:var(--grey)">${I('bag',20)}</span><span class="tx lab">Need an editor? Find one in Marketplace</span>${I('chev',18)}</button>
    <div class="sec"><span>Done · ${done.length}</span><button data-act="allDone">See all ›</button></div>
    <div class="rail">${done.map(p=>`<button data-act="openProject" data-id="${p.id}"><div class="cv34" style="${bg(p.img)}"><span class="dur">${fmt(p.dur)}</span></div><div class="lab" style="margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div><div class="meta">${p.sub.split(' · ')[1]||''}</div></button>`).join('')}</div>
   </div></div>`};
 };
-V.activity=()=>({html:`<div class="scroll">${topbar('Activity',`${S.activity.filter(a=>a.unread).length} need you`)}<div class="pad">
-  <div class="sec" style="margin-top:6px"><span>New</span></div><div class="rows stag">${S.activity.filter(a=>a.unread).map(actItem).join('')||'<div class="empty">All caught up.</div>'}</div>
-  <div class="sec"><span>Earlier</span></div><div class="rows">${S.activity.filter(a=>!a.unread).map(actItem).join('')}</div></div><div style="height:40px"></div></div>`});
-function actItem(a){return `<div class="row" style="align-items:flex-start;${a.unread?'':'background:transparent'}">${av(a.by,36)}<div class="tx"><b class="lab" style="font-size:15px">${a.t}</b><div class="meta">${a.p}</div>${a.tag?`<div style="margin-top:8px"><span class="tag ${a.tag[1]}" style="height:22px;font-size:13px">${a.tag[0]}</span></div>`:''}${a.act?`<div style="margin-top:10px"><button class="btn-card" style="height:34px;font-size:16px" data-act="${a.act[1]==='review'?'openReview':'ask'}" data-id="${a.act[2]}">${a.act[0]}</button></div>`:''}</div>${a.unread?'<span class="dot" style="margin-top:6px"></span>':''}</div>`;}
-
+V.activity=()=>{const unread=S.inbox.filter(m=>m.u).length;
+ return {html:`<div class="scroll">${topbar('Messages',unread?`${unread} unread`:'All caught up')}<div class="pad">
+  <div class="list stag" style="margin-top:6px">${S.inbox.map(m=>`<button class="row mrow ${m.u?'u':''}" ${m.id?`data-act="${m.go||'openProject'}" data-id="${m.id}"`:`data-act="go" data-to="thread" data-k="${m.by}"`}>${av(m.by,44)}<span class="tx"><span style="display:flex;align-items:baseline;gap:6px"><b class="lab">${PPL[m.by].n}${m.last?' '+m.last:''}</b>${m.proj?`<span class="meta mproj">· ${m.proj}</span>`:''}<span class="meta" style="margin-left:auto;flex:none">${m.time}</span></span><span class="mtxt">${m.t}</span></span>${m.u?'<span class="dot"></span>':''}</button>`).join('')}</div>
+  <p class="meta" style="margin-top:14px">Project updates and chats with editors, in one place.</p></div><div style="height:40px"></div></div>`};};
+V.messages=V.activity;
 /* ---- all projects ---- */
 function filtered(){const f=S.filter;let l=S.projects.filter(p=>f.status==='all'||p.status===f.status);if(f.types.length)l=l.filter(p=>f.types.includes(p.type));if(f.sort==='Deadline')l=[...l].sort((a,b)=>(a.status==='done')-(b.status==='done'));return l;}
 V.all=()=>{const l=filtered();const f=S.filter;const act=[...(f.status!=='all'?[f.status==='done'?'Done':'In progress']:[]),...f.types];
@@ -625,32 +643,26 @@ V.all=()=>{const l=filtered();const f=S.filter;const act=[...(f.status!=='all'?[
 
 /* ---- new project ---- */
 let NP;
-V.newproject=(p)=>{ if(!(NP&&p.keep)){let k=1;while(S.projects.some(x=>x.title==='Project '+k))k++;NP={name:'Project '+k,type:'',brief:'',editor:p.editor||'L',price:75,rounds:3,refs:[],clips:[],opt:false};}
+V.newproject=(p)=>{ if(!(NP&&p.keep)){let k=1;while(S.projects.some(x=>x.title==='Project '+k))k++;NP={name:'Project '+k,type:'Vlog',brief:'',editor:p.editor||'L',price:75,rounds:3,refs:[],clips:[]};}
  const ed=PPL[NP.editor].n, okFoot=NP.clips.length>0;
  const SRC=[['gdrive','Google Drive','#1FA463'],['dropbox','Dropbox','#0061FE'],['icloud','iCloud Drive','#3D8BFF'],['wetransfer','WeTransfer','#FFFFFF'],['frameio','Frame.io','#8E6CFF'],['link','Any link','#8A8A92']];
- const req=(n,t,ok)=>`<div class="npsec"><span class="npn ${ok?'ok':''}">${ok?I('check',13,2.6):n}</span><b class="lab">${t}</b><span class="meta" style="margin-left:auto">Required</span></div>`;
  return {html:`<div class="scroll"><div class="topbar"><button class="ib" data-act="back" aria-label="Close">${I('close')}</button><b style="font:600 17px var(--ui)">New project</b></div><div class="pad">
-  <div style="display:flex;align-items:center;gap:8px;border-bottom:1.5px solid #2C2C30"><input class="field" id="npname" value="${esc(NP.name)}" aria-label="Project name" style="font:700 24px var(--ui);background:transparent;padding:6px 0;border:0;border-radius:0;flex:1"><span style="color:var(--grey)">${I('pen',18)}</span></div>
-  <p class="meta" style="margin:6px 0 0">You can rename it any time.</p>
-  ${req(1,'Your footage',okFoot)}
+  <input class="field" id="npname" value="${esc(NP.name)}" aria-label="Project name" placeholder="Name it, e.g. Morning routine" style="font:700 24px var(--ui);background:transparent;padding:6px 0;border:0;border-bottom:1.5px solid #2C2C30;border-radius:0">
+  <label class="lbl">Footage</label>
   ${NP.clips.map(c=>`<div class="clip" id="clip-${c.id}"><div class="thumb" style="${bg(c.img)};width:40px;height:54px;border-radius:6px"></div><div style="flex:1;min-width:0"><b class="lab" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.name)}</b><span class="meta" data-st>${c.p<100?`Uploading · ${c.p}%`:c.meta}</span><div class="cbar"><i style="width:${c.p}%"></i></div></div><button class="ib" style="width:30px;height:30px;color:var(--grey)" data-act="npDelClip" data-id="${c.id}" aria-label="Remove">${I('close',18)}</button></div>`).join('')}
   <button class="upl" data-act="npUpload">${I('up',22,2)}<div style="text-align:left"><b class="lab">Upload from this phone</b><div class="meta">Videos and photos from your camera roll</div></div></button>
-  <p class="meta" style="margin:14px 0 8px">Or add a link to where your clips already are</p>
+  <p class="meta" style="margin:12px 0 8px">Or paste a link to where your clips are</p>
   <div class="srcs">${SRC.map(([k,n,c])=>`<button data-act="npLink" data-k="${k}" data-n="${n}"><span class="sic" style="background:${c}1f;color:${c}">${k==='link'?I('link',18):n[0]}</span>${n}</button>`).join('')}</div>
-  ${req(2,'Who edits',true)}
-  <div class="list"><button class="row" data-act="pickEditor">${av(NP.editor,32)}<span class="tx"><b class="lab">${PPL[NP.editor].n==='Leo'?'Leo Park':'Sara Kim'}</b><div class="meta">${NP.editor==='L'?'Worked together 4 times':'From Marketplace · $75'}</div></span><span class="meta">Change</span>${I('chev',16)}</button>
-  <button class="row" data-act="tab" data-to="market"><span style="color:var(--grey)">${I('bag',20)}</span><span class="tx lab">Find someone new in Marketplace</span>${I('chev',16)}</button></div>
-  ${req(3,'Details',true)}
-  <div class="list">
+  <label class="lbl">Type · used by Filter</label><div class="chips" id="nptype">${['Vlog','Food','Talking head','Product','Travel'].map(t=>`<button class="chip ${NP.type===t?'on':''}" data-act="npType" data-t="${t}">${t}</button>`).join('')}<button class="chip">+ New type</button></div>
+  <label class="lbl">The brief</label><div style="position:relative"><textarea class="field" id="npbrief" placeholder="What should it feel like? Length, pace, music, captions…">${esc(NP.brief)}</textarea><div style="position:absolute;right:10px;bottom:10px;display:flex;gap:6px"><button class="ib" style="width:34px;height:34px" data-act="voiceBrief" aria-label="Speak your brief">${I('mic',18)}</button><button class="ib" style="width:34px;height:34px;color:var(--violet)" data-act="aiBrief" aria-label="Write with AI">${I('spark',18)}</button></div></div>
+  <label class="lbl">References</label><div style="display:flex;gap:8px">${NP.refs.map(r=>`<div class="reel" style="${bg(r)};width:84px"><span class="dur">${I('play',10)}</span></div>`).join('')}<button style="width:84px;aspect-ratio:9/13;border-radius:8px;border:1.5px dashed #3a3a42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:500 13px var(--ui);color:var(--grey)" data-act="npRef">${I('plus',20)}Add a link</button></div>
+  <label class="lbl">Details</label><div class="list">
+   <button class="row" data-act="pickEditor"><span class="tx">Editor</span>${av(NP.editor,22)}<b class="lab">${NP.editor==='L'?'Leo Park':'Sara Kim'}</b>${I('chev',16)}</button>
    <div class="row"><span class="tx">Price <span class="meta">fair $50–150</span></span><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npPrice" data-d="-5">${I('minus',16,2)}</button><b class="lab mono" id="npp" style="width:44px;text-align:center">$${NP.price}</b><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npPrice" data-d="5">${I('plus',16,2)}</button></div>
    <div class="row"><span class="tx">Rounds</span><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npRounds" data-d="-1">${I('minus',16,2)}</button><b class="lab mono" id="npr" style="width:44px;text-align:center">${NP.rounds}</b><button class="ib" style="width:30px;height:30px;background:#2C2C30" data-act="npRounds" data-d="1">${I('plus',16,2)}</button></div>
    <button class="row"><span class="tx">First cut</span><b class="lab">Fri, Nov 14 · 6 pm</b>${I('chev',16)}</button>
    <button class="row"><span class="tx">Payment</span><b class="lab">50% now · 50% on approval</b>${I('chev',16)}</button></div>
-  <button class="npopt" data-act="npOpt"><b class="lab">Optional</b><span class="meta">Brief, references, tag</span><span style="margin-left:auto;transform:rotate(${NP.opt?90:0}deg);transition:transform .2s;display:flex">${I('chev',18)}</span></button>
-  ${NP.opt?`<label class="lbl">The brief</label><div style="position:relative"><textarea class="field" id="npbrief" placeholder="What should it feel like? Length, pace, music, captions…">${esc(NP.brief)}</textarea><div style="position:absolute;right:10px;bottom:10px;display:flex;gap:6px"><button class="ib" style="width:34px;height:34px" data-act="voiceBrief" aria-label="Speak your brief">${I('mic',18)}</button><button class="ib" style="width:34px;height:34px;color:var(--violet)" data-act="aiBrief" aria-label="Write with AI">${I('spark',18)}</button></div></div>
-  <label class="lbl">References</label><div style="display:flex;gap:8px">${NP.refs.map(r=>`<div class="reel" style="${bg(r)};width:84px"><span class="dur">${I('play',10)}</span></div>`).join('')}<button style="width:84px;aspect-ratio:9/13;border-radius:8px;border:1.5px dashed #3a3a42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:500 13px var(--ui);color:var(--grey)" data-act="npRef">${I('plus',20)}Add a link</button></div>
-  <label class="lbl">Tag · used by Filter</label><div class="chips" id="nptype">${['Vlog','Food','Talking head','Product','Travel'].map(t=>`<button class="chip ${NP.type===t?'on':''}" data-act="npType" data-t="${t}">${t}</button>`).join('')}<button class="chip">+ New tag</button></div>`:''}
-  <p class="meta" style="text-align:center;margin:20px 0 12px">Service fee 5% · nothing is charged until ${ed} accepts</p>
+  <p class="meta" style="text-align:center;margin:16px 0 12px">Service fee 5% · nothing is charged until ${ed} accepts</p>
   <button class="btn-main" data-act="sendInvite" ${okFoot?'':'disabled'}>${okFoot?`Send invite to ${ed}`:'Add footage to continue'}</button><div style="height:40px"></div></div></div>`,
   mount(el){$('#npname',el).addEventListener('input',e=>NP.name=e.target.value);const b=$('#npbrief',el);if(b)b.addEventListener('input',e=>NP.brief=e.target.value);if(NP.sc){const sc=$('.scroll',el);sc.scrollTop=NP.sc;NP.sc=0;}}};};
 function npRe(){const sc=$('#views .view:last-child .scroll');NP.sc=sc?sc.scrollTop:0;go('newproject',{keep:1},'none');stack.splice(stack.length-2,1);}
@@ -703,20 +715,20 @@ function setT(t){const p=rvP();RV.t=Math.max(0,Math.min(p.dur,t));const tm=$('#t
  const ov=$('#drawov');if(ov){const d=RV.mode==='draw'?null:p.drafts.find(x=>x.draw&&Math.abs(x.t-RV.t)<2);if(d){ov.src=d.draw;ov.hidden=false;}else ov.hidden=true;}}
 function drawPins(){const p=rvP();const el=$('#pins');if(!el)return;el.innerHTML=p.pins.map(x=>`<div class="pin" style="left:${x.t/p.dur*100}%;--c:${PPL[x.by].c}">${av(x.by,22)}</div>`).join('')+p.drafts.filter(d=>d.b).map(d=>`<span class="rbar" style="left:${d.t/p.dur*100}%;width:${(d.b-d.t)/p.dur*100}%"></span>`).join('');}
 function drawRange(){const p=rvP();const r=$('#rng');if(!r)return;if(RV.mode!=='range'){r.innerHTML='';return;}r.innerHTML=`<div class="rngbox" style="left:${RV.ra/p.dur*100}%;width:${(RV.rb-RV.ra)/p.dur*100}%"><span class="hnd" data-h="a"></span><span class="hnd r" data-h="b"></span></div>`;const l=$('#rlab');if(l)l.textContent=`${fmt(RV.ra)} – ${fmt(RV.rb)} · ${RV.rb-RV.ra} s`;}
-const dbar=(t,s,btn)=>`<div class="dbar"><div style="flex:1;min-width:0"><b class="lab">${t}</b><div class="meta">${s}</div></div>${btn}</div>`;
+const dbar=(t,s,btn,who,x)=>`<div class="dbar">${who?(who.length===1?av(who,40):`<span class="dav">${who}</span>`):''}<div style="flex:1;min-width:0"><b class="lab">${t}</b><div class="meta">${s}</div></div>${btn}${x?`<button class="ib dx" data-act="dbarX" aria-label="Hide">${I('close',22)}</button>`:''}</div>`;
 function drawBottom(){const p=rvP();const b=$('#bottom'),dc=$('#decide');if(!b)return;drawRange();
  const ed=edName(p),n=p.drafts.length,can=canNoteP(p);
  // decision area
  let d='';
  if(RV.mode==='voice') d=`<div class="voicebar f"><span class="vmic">${I('mic',20)}</span><div style="display:flex;flex-direction:column;gap:2px"><b class="lab">Talking to ${ed}</b><span class="mono" style="font-size:13px" id="vt">Listening · 0:00</span></div><div class="wave">${Array.from({length:14},(_,i)=>`<i style="animation-delay:${(i*73)%600}ms"></i>`).join('')}</div><button class="btn-card" style="height:34px;font-size:16px" data-act="voiceStop">Done</button></div>`;
- else if(RV.mode==='voiceDone') d=dbar(`${I('spark',14)} 3 notes from your voice`,'Pinned on the timeline',`<button class="btn-card" style="height:36px;font-size:16px" data-act="openNotes">Check</button>`);
- else if(RV.mode==='range') d=dbar(`<span id="rlab">${fmt(RV.ra)} – ${fmt(RV.rb)} · ${RV.rb-RV.ra} s</span>`,'Drag the edges to set the part',`<button class="btn-sec sm" data-act="rangeCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="rangeAdd">Add note</button>`);
- else if(RV.mode==='draw') d=dbar(`Draw on ${fmt(RV.t)}`,'Circle it, point at it, scribble',`<button class="btn-sec sm" data-act="drawCancel">Cancel</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="drawDone">Next</button>`);
- else if(p.asks) d=dbar(`${ed} asks for 1 more day`,'“Need one more day for the colour pass.”',`<button class="btn-sec sm" data-act="askNo" data-id="${p.id}">Keep Fri</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="askYes" data-id="${p.id}">Give 1 day</button>`);
- else if(p.status==='done') d=dbar(`Approved · v${p.v} is final`,`$${(p.price||75)/2} sent to ${ed} · download or post it`,`<button class="btn-sec sm" data-act="download" data-id="${p.id}">${I('dl',16)}Save</button><button class="btn-card" style="height:36px;font-size:16px;margin-left:6px" data-act="go" data-to="post" data-id="${p.id}">Post</button>`);
- else if(!can) d=dbar(`Waiting on ${ed} · v${p.v+1}`,`Due ${p.due} · arrives in <span id="acd">10</span> s in this demo`,`<button class="btn-sec sm" data-act="simUpload" data-id="${p.id}">${I('bolt',16)}Upload now</button>`);
- else if(n) d=dbar(`${n} new note${n>1?'s':''}`,`${ed} starts v${p.v+1} when you send`,`<button class="btn-main" style="width:auto;height:40px;font-size:17px;padding:0 18px" data-act="sendNotes">Send to ${ed}</button>`);
- else d=dbar(p.v>=p.rounds?`Last round · v${p.v}`:'No new notes',p.v>=p.rounds?'Approve it, or send notes for one more round':`Happy with v${p.v}?`,`<button class="btn-out" data-act="approve">Approve v${p.v}</button>`);
+ else if(RV.mode==='voiceDone') d=dbar('3 notes from your voice','Pinned on the timeline · check them',`<button class="dbtn" data-act="openNotes">Check</button>`,I('spark',20),1);
+ else if(RV.mode==='range') d=dbar(`<span id="rlab">${fmt(RV.ra)} – ${fmt(RV.rb)} · ${RV.rb-RV.ra} s</span>`,'Drag the edges to set the part',`<button class="btn-sec sm" data-act="rangeCancel">Cancel</button><button class="dbtn" data-act="rangeAdd">Add</button>`,I('range',20));
+ else if(RV.mode==='draw') d=dbar(`Draw on ${fmt(RV.t)}`,'Circle it, point at it, scribble',`<button class="btn-sec sm" data-act="drawCancel">Cancel</button><button class="dbtn" data-act="drawDone">Next</button>`,I('pen',20));
+ else if(p.asks) d=dbar(`${ed} asks for +1 day`,'Wants until Sat',`<button class="btn-sec sm" data-act="askNo" data-id="${p.id}">Keep Fri</button><button class="dbtn" data-act="askYes" data-id="${p.id}">+1 day</button>`,p.ed);
+ else if(p.status==='done') d=dbar(`v${p.v} is final`,`$${(p.price||75)/2} sent to ${ed}`,`<button class="btn-sec sm" data-act="download" data-id="${p.id}">${I('dl',16)}Save</button><button class="dbtn" data-act="go" data-to="post" data-id="${p.id}">Post</button>`,'M');
+ else if(!can) d=dbar(`Waiting on ${ed} · v${p.v+1}`,`Due ${p.due} · demo: <span id="acd">10</span> s`,`<button class="btn-sec sm" data-act="simUpload" data-id="${p.id}">${I('bolt',16)}Upload now</button>`,p.ed);
+ else if(n) d=dbar(`Send your ${n} note${n>1?'s':''} to ${ed}`,`${ed} starts v${p.v+1} after you send`,`<button class="dbtn" data-act="sendNotes">Send</button>`,'M',1);
+ else d=dbar(p.v>=p.rounds?`Last round · v${p.v}`:'No new notes',p.v>=p.rounds?'Approve it, or send notes for one more round':`Happy with v${p.v}?`,`<button class="dbtn" data-act="approve">Approve</button>`,'M',1);
  dc.innerHTML=d;
  // toolbar
  if(RV.mode==='draw'){b.innerHTML=`<div class="tools">${[['pen','Pen'],['line','Arrow'],['circle','Circle']].map(([k,l])=>`<button class="tl ${RV.tool===k?'on':''}" data-act="drawTool" data-k="${k}">${k==='circle'?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="8" ry="6.5"/></svg>':k==='line'?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 19 19 5M11 5h8v8"/></svg>':I('pen',24,1.6)}${l}</button>`).join('')}<button class="tl" data-act="drawUndo">${I('undo',24,1.6)}Undo</button></div>`;return;}
@@ -795,7 +807,6 @@ V.editor=({k='L'})=>{const e=EDS.find(x=>x.k===k);return {html:`<div class="scro
    <div class="revsum"><div><b style="font:900 44px var(--disp);line-height:1">${e.star}</b><div class="stars">${I('starf',14).repeat(Math.round(+e.star))}</div><div class="meta">${revN(e)} reviews</div></div><div style="flex:1">${[5,4,3,2,1].map(n=>{const c=e.reviews.filter(r=>r[3]===n).length;return `<div class="rbarrow"><span class="meta">${n}</span><div class="rtrack"><i style="width:${c/revN(e)*100}%"></i></div><span class="meta" style="width:14px;text-align:right">${c}</span></div>`}).join('')}</div></div>
    ${e.reviews.map(([n,a,c,st,d,t,proj])=>`<div class="rev"><div style="display:flex;align-items:center;gap:10px"><span class="av" style="width:32px;height:32px;background:${c};font-size:14px">${a}</span><div style="flex:1"><b class="lab">${n}</b><div class="meta">${proj} · ${d}</div></div><span class="stars">${I('starf',13).repeat(st)}<span style="color:#3a3a42">${I('starf',13).repeat(5-st)}</span></span></div><p class="t15" style="margin:10px 0 0;line-height:1.45">${t}</p></div>`).join('')}
   </div><div style="height:40px"></div></div></div>`};};
-V.messages=()=>({html:`<div class="scroll">${topbar('Messages')}<div class="pad"><div class="list">${[['S','Sara Kim','"Yes, I can do 2 days for $75."',1],['L','Leo Park','"Sent you my storefront link."',0],['J','Jon Diaz','You hired Jon · Product unboxing',0]].map(([k,n,m,u])=>`<button class="row" data-act="go" data-to="thread" data-k="${k}">${av(k,40)}<span class="tx"><b class="lab" style="font-size:15px">${n}</b><div class="meta">${m}</div></span>${u?'<span class="dot"></span>':''}</button>`).join('')}</div><p class="meta" style="margin-top:14px">Once someone joins a project, talk moves into that project's notes.</p></div></div>`});
 V.thread=({k='L'})=>{const m=S.msgs[k]||[];return {html:`<div style="padding-top:47px;display:flex;flex-direction:column;height:100%">${topbar(PPL[k].n+(k==='L'?' Park':k==='S'?' Kim':' Diaz'),'Usually replies in 1–2 h','',av(k,16))}
   <div id="chat" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px 16px">${m.map(x=>`<div class="bubble ${x.me?'me':'them'}">${esc(x.t)}</div>`).join('')}</div>
   <form id="cf" style="display:flex;gap:8px;padding:10px 12px 34px;align-items:center"><input class="field" id="ci" placeholder="Message ${PPL[k].n}" style="border-radius:22px;flex:1"><button class="ib" style="background:var(--violet);color:#000;border-radius:50%" aria-label="Send">${I('up',20,2.4)}</button></form></div>`,
@@ -831,16 +842,18 @@ V.plan=()=>({html:`<div class="scroll">${topbar('Plan and storage','38 of 100 GB
 /* ---- editor ---- */
 V['ed-home']=()=>{const E=S.ed;const left=E.todo.filter(x=>!x.done).length;const doneE=['c1','c2','c4'].map(proj);
  const rows=[
-  {go:'ed-project',img:'mr',dur:84,title:'Morning routine',l2:`v${E.uploaded?4:3} · round 2 of 3`,sub:E.uploaded?'v4 sent · Maya is reviewing':`${left} notes from Maya · v4 due Fri`,tag:E.uploaded?null:['YOUR TURN','violet']},
-  ...(E.accepted?[{img:'mk4',dur:42,title:'Street food tour',l2:'Round 1 of 3 · footage arrives Mon',sub:'First cut due Fri, Nov 14',tag:['NEW','green']}]:[]),
+  {go:'ed-project',img:'mr',dur:84,title:'Morning routine',l2:`v${E.uploaded?4:3} · round 2 of 3`,sub:E.uploaded?'v4 sent · Maya is reviewing':`${left} notes from Maya · v4 due Fri`,tag:E.uploaded?null:['YOUR TURN','violet'],btn:'Open notes'},
+  ...(E.accepted?[{img:'mk4',dur:42,title:'Street food tour',l2:'Round 1 of 3 · footage arrives Mon',sub:'First cut due Fri, Nov 14',tag:['NEW','green'],btn:'Get footage'}]:[]),
   {img:'cafe',dur:112,title:'Café opening',l2:'v2 · round 2 of 3',sub:'Waiting on Maya’s answer',tag:['YOU ASKED +1 DAY','yellow']},
   {img:'wed',dur:138,title:'Wedding teaser',l2:'Round 1 of 3 · footage not in yet',sub:'Maya is shooting this weekend',tag:null}];
- const row=r=>`<div class="prow" ${r.go?`data-act="go" data-to="${r.go}"`:`data-act="edSoon"`} role="button" tabindex="0">${r.tag?`<span class="tag ${r.tag[1]} rtag">${r.tag[0]}</span>`:''}<div class="cv34" style="${bg(r.img)}"><span class="cut">${I('cut',11,2)}${mmss(r.dur)}</span></div><div class="tx"><b>${r.title}</b><span class="meta" style="font-size:13px">${r.l2}</span><div class="s">${av('M',18)}<span>${r.sub}</span></div></div><button class="ib" style="width:30px;align-self:center;color:var(--grey)" aria-label="More">${I('more',20)}</button></div>`;
+ const big=r=>`<div class="prow big" ${r.go?`data-act="go" data-to="${r.go}"`:`data-act="edSoon"`} role="button" tabindex="0">${r.tag?`<span class="tag ${r.tag[1]} rtag">${r.tag[0]}</span>`:''}<div class="cv34" style="${bg(r.img)}"><span class="cut">${I('cut',11,2)}${mmss(r.dur)}</span></div><div class="tx"><b>${r.title}</b><span class="meta" style="font-size:13px">${r.l2}</span><div class="s">${av('M',18)}<span>${r.sub}</span></div><span class="btn-card hbtn">${r.btn}</span></div><button class="ib" style="width:30px;align-self:flex-start;margin-top:2px;color:var(--grey)" aria-label="More">${I('more',20)}</button></div>`;
+ const small=r=>`<div class="row wrow" data-act="edSoon" role="button" tabindex="0"><div class="cv34 sm" style="${bg(r.img)}"><span class="cut">${mmss(r.dur)}</span></div><span class="tx"><b class="lab">${r.title}</b><div class="meta">${r.sub}</div></span>${av('M',24)}<button class="ib" style="width:30px;margin-right:-6px;color:var(--grey)" aria-label="More">${I('more',20)}</button></div>`;
  return {tab:'ed-home',html:`<div class="fixedtop"><div style="display:flex;align-items:center;height:54px;padding:0 10px 0 16px"><span class="wm" style="flex:1">DUOREELS</span><button class="ib" aria-label="Activity">${I('bell')}</button></div></div>
  <div class="scroll" style="padding-top:101px;padding-bottom:110px"><div class="pad">
   ${!E.accepted?`<button class="card slide24" style="width:100%;text-align:left;padding:14px;display:flex;gap:12px;align-items:center;background:linear-gradient(120deg,#1C1C1E,#1a1430)" data-act="go" data-to="join">${av('M',40)}<span class="tx" style="flex:1"><b class="lab" style="font-size:15px">Maya invited you</b><div class="meta">${E.invite.title} · $${E.invite.price} · 3 rounds</div></span>${I('chev',18)}</button>`:''}
   <div class="sec" style="margin-top:24px"><span>In progress · ${rows.length}</span><button data-act="edSoon">See all ›</button></div>
-  <div class="stag">${rows.map(row).join('')}</div>
+  <div class="stag">${rows.filter(r=>r.btn).map(big).join('')}</div>
+  <div class="list" style="margin-top:18px">${rows.filter(r=>!r.btn).map(small).join('')}</div>
   <div class="sec"><span>Done · ${doneE.length}</span><span class="meta" style="text-transform:none;letter-spacing:0">$412 this month</span></div>
   <div class="rail">${doneE.map(p=>`<button data-act="edSoon"><div class="cv34" style="${bg(p.img)}"><span class="dur">${fmt(p.dur)}</span></div><div class="lab" style="margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div><div class="meta">Paid</div></button>`).join('')}</div></div></div>`};};
 V.join=()=>{const E=S.ed.invite;return {html:`<div class="scroll"><div class="topbar"><button class="ib" data-act="back" aria-label="Close">${I('close')}</button></div><div class="pad">
@@ -867,8 +880,8 @@ V['ed-project']=()=>{const E=S.ed;const p=proj('mr');const v=E.uploaded?4:3;
    return()=>{clearInterval(RV.timer);};}};};
 function edDraw(){const E=S.ed,p=proj('mr');const left=E.todo.filter(x=>!x.done).length;const pe=$('#pins'),dc=$('#decide'),b=$('#bottom');if(!b)return;
  pe.innerHTML=E.todo.map(d=>`<div class="pin" data-act="edSeek" data-t="${d.t}" style="left:${d.t/p.dur*100}%;--c:${d.done?'#3a3a42':'#8E6CFF'};${d.done?'opacity:.45':''};cursor:pointer">${av('M',22)}</div>`).join('');
- dc.innerHTML=E.uploaded?dbar('Waiting on Maya · v4 sent','$37.50 earned · she’s reviewing now',`<button class="btn-sec sm" data-act="simApprove">${I('bolt',16)}Demo: approve</button>`)
-  :dbar(`${E.todo.length} notes from Maya · ${E.todo.length-left} fixed`,left?`${left} still open · v4 due Fri 6 pm`:'All fixed · ready for v4',`<button class="btn-main" style="width:auto;height:40px;font-size:17px;padding:0 18px" data-act="edUpload">${I('upload',18,2)} Upload v4</button>`);
+ dc.innerHTML=E.uploaded?dbar('v4 sent to Maya','$37.50 earned · she’s reviewing',`<button class="btn-sec sm" data-act="simApprove">${I('bolt',16)}Demo: approve</button>`,'M')
+  :dbar(`${E.todo.length} notes · ${E.todo.length-left} fixed`,left?`${left} open · v4 due Fri`:'All fixed · ready for v4',`<button class="dbtn" data-act="edUpload">Upload v4</button>`,'M');
  b.innerHTML=`<div class="tools">${[['upload','Upload','edUpload'],['footage','Footage','edFootage'],['list','Brief','edBrief'],['chat','Reply','edReply']].map(([i,l,a])=>`<button class="tl" data-act="${a}" ${a==='edUpload'&&E.uploaded?'disabled':''}>${I(i,24,1.6)}${l}</button>`).join('')}<button class="notesbtn" data-act="edNotes">Notes ${left?`<span class="badge">${left}</span>`:''}</button></div>`;}
 function edNotesSheet(){const E=S.ed;const left=E.todo.filter(x=>!x.done).length;
  openSheet(`<div style="display:flex;align-items:center;margin:2px 0 4px"><h3 class="t20" style="flex:1">Maya’s notes</h3><span class="meta">${E.todo.length-left} of ${E.todo.length} fixed</span></div><p class="meta" style="margin:0 0 4px">Tick a note when it’s fixed · tap the time to jump there</p>
@@ -913,7 +926,7 @@ const act={
  fShow(){closeSheet();if(stack[stack.length-1].name==='all')refresh();else go('all');},
  fClear(){S.filter={status:'all',types:[],sort:'Newest'};filterSheet(true);},
  ask(el,ev){ev&&ev.stopPropagation();const p=proj(el.dataset.id);openSheet(`<div style="display:flex;gap:12px;align-items:center;margin:4px 0 12px">${av(p.ed,40)}<div><b class="lab" style="font-size:16px">${edName(p)} asks for 1 more day</b><div class="meta">${p.title} · due Fri → Sat</div></div></div><div class="card t15" style="padding:14px;background:#2C2C30">"Need one more day for the colour pass. Want it to look right."</div><div style="display:flex;gap:10px;margin-top:16px"><button class="btn-main" style="flex:1" data-act="askYes" data-id="${p.id}">Give 1 day</button><button class="btn-sec" data-act="askNo" data-id="${p.id}">Keep Fri</button></div>`);},
- askYes(el){const p=proj(el.dataset.id);p.asks=false;p.turn='them';p.due='Sat';p.sub=`${edName(p)} · due Sat`;S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id&&a.act[1]==='ask')a.unread=false;});closeSheet();tick();refresh();toast(`${edName(p)} has until Sat`,()=>{p.asks=true;p.turn='me';p.sub='Wants until Sat · answer him';refresh();});},
+ askYes(el){const p=proj(el.dataset.id);S.inbox.forEach(m=>{if(m.id===p.id)m.u=0;});p.asks=false;p.turn='them';p.due='Sat';p.sub=`${edName(p)} · due Sat`;S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id&&a.act[1]==='ask')a.unread=false;});closeSheet();tick();refresh();toast(`${edName(p)} has until Sat`,()=>{p.asks=true;p.turn='me';p.sub='Wants until Sat · answer him';refresh();});},
  askNo(el){const p=proj(el.dataset.id);p.asks=false;p.turn='them';p.sub=`${edName(p)} · due Fri`;closeSheet();refresh();toast(`Told ${edName(p)} Friday still stands`);},
  // new project
  npUpload(){const n=NP.clips.length;const imgs=['s01','s03','s04','s07'];npAddClip({name:['IMG_4821.MOV','IMG_4822.MOV','IMG_4830.MOV','IMG_4833.MOV'][n%4],meta:['0:48 · 312 MB','1:12 · 486 MB','0:31 · 204 MB','2:05 · 820 MB'][n%4]+' · from phone',img:imgs[n%4]});},
@@ -977,7 +990,7 @@ const act={
   const rows=$$('#nlist .nrow');rows.forEach((r,i)=>setTimeout(()=>r.classList.add('fly'),i*90));tick();await sleep(rows.length*90+420);
   const sent=p.drafts.splice(0);sent.forEach(d=>p.all.unshift({id:d.id,t:d.t,by:'M',v:p.v,text:d.text,done:false}));
   p.newV=false;p.turn='them';p.sub=`${edName(p)} is on v${p.v+1}`;closeSheet();drawBottom();
-  S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id)a.unread=false;});
+  S.activity.forEach(a=>{if(a.act&&a.act[2]===p.id)a.unread=false;});S.inbox.forEach(m=>{if(m.id===p.id)m.u=0;});
   toast(`${n} note${n>1?'s':''} sent to ${edName(p)}`,()=>{p.drafts=sent;sent.forEach(()=>p.all.shift());p.newV=true;p.turn='me';p.sub=`v${p.v} to review`;refresh();});refresh();},
  approve(){const p=rvP()||proj('mr');openSheet(`<span class="tag green">Approve v${p.v}</span><h3 class="t28" style="margin:14px 0 6px">Make v${p.v} the final?</h3><p class="t15 grey" style="margin:0 0 6px">$${(p.price||75)/2} goes to ${edName(p)} now. You can still download and post it any time.</p><div style="display:flex;gap:10px;margin-top:16px"><button class="btn-main" style="flex:1" data-act="approveYes">Approve</button><button class="btn-sec" data-act="closeSheet">Not yet</button></div>`);},
  approveYes(){const p=rvP()||proj('mr');p.status='done';p.newV=false;p.turn='them';p.sub='Approved · Nov 9';closeSheet();tick();refresh();setTimeout(()=>toast(`Approved · $${(p.price||75)/2} sent to ${edName(p)}`),300);},
@@ -1030,6 +1043,7 @@ const act={
  suggestSend(){closeSheet();tick();toast('Sent to Maya · she can accept or reply');},
  edNotes(){edNotesSheet();},
  edUpload(){edUploadSheet();},
+ dbarX(){const d=$('#decide');if(d)d.innerHTML='';},
  edSeek(el){closeSheet();if(RV&&RV.playing)act.playpause();setT(+el.dataset.t);},
  edSoon(){toast('Not in this demo');},
  edFootage(){toast('Saving 6 clips · 2.4 GB to Files');},
@@ -1046,10 +1060,10 @@ const act={
  // simulate
  simUpload(el){if(S.role==='editor'){act.switchRole();}const top=stack[stack.length-1];const id=el?.dataset?.id||(['review','project'].includes(top?.name)?top.params.id:'mr');const p=proj(id);if(p.status==='done'){p.status='progress';}
   p.v=Math.min(p.v+1,9);if(p.v>p.rounds)p.rounds=p.v;p.round=p.v;p.newV=true;p.asks=false;p.turn='me';p.sub=`v${p.v} to review`;p.pins=p.v>1?[{t:Math.round(p.dur*.3),by:p.ed}]:[];p.drafts=[];p.all.forEach(a=>{if(a.v<p.v&&a.by==='M')a.reply=a.reply||{by:p.ed,text:'Fixed in v'+p.v+'.'};});
-  const ed=edName(p);S.activity.unshift({by:p.ed,t:`${ed} uploaded v${p.v}`,p:`${p.title} · just now`,tag:[`NEW · V${p.v}`,'green'],act:[`Review v${p.v}`,'review',p.id],unread:true});
+  const ed=edName(p);S.inbox.unshift({by:p.ed,last:({L:'Park',S:'Kim',J:'Diaz'})[p.ed]||'',proj:p.title,t:`v${p.v} is up. Take a look when you can.`,time:'now',id:p.id,go:'openReview',u:1});S.activity.unshift({by:p.ed,t:`${ed} uploaded v${p.v}`,p:`${p.title} · just now`,tag:[`NEW · V${p.v}`,'green'],act:[`Review v${p.v}`,'review',p.id],unread:true});
   banner(`<div class="thumb" style="${bg(p.img)};width:40px;height:52px"></div><div style="flex:1"><b class="lab" style="font-size:15px">${ed} uploaded v${p.v}</b><div class="meta">${p.title} · ${p.v>1?'your notes fixed · ':''}tap to review</div></div>`,()=>{if(stack[stack.length-1]?.params?.id!==p.id)go('project',{id:p.id});});
   const cur=stack[stack.length-1]?.name;if(['home','project','review','activity','all'].includes(cur))refresh();},
- simAsk(){const p=proj('pu');p.asks=true;p.turn='me';p.sub='Wants until Tue · answer him';S.activity.unshift({by:'J',t:'Jon asks for 1 more day',p:'Product unboxing · just now',tag:['JON ASKS +1 DAY','yellow'],act:['Answer','ask','pu'],unread:true});
+ simAsk(){const p=proj('pu');p.asks=true;p.turn='me';p.sub='Wants until Tue · answer him';S.inbox.unshift({by:'J',last:'Diaz',proj:p.title,t:'Could I have one more day? Want to redo the colour.',time:'now',id:'pu',go:'ask',u:1});S.activity.unshift({by:'J',t:'Jon asks for 1 more day',p:'Product unboxing · just now',tag:['JON ASKS +1 DAY','yellow'],act:['Answer','ask','pu'],unread:true});
   banner(`${av('J',36)}<div style="flex:1"><b class="lab" style="font-size:15px">Jon asks for 1 more day</b><div class="meta">Product unboxing · Mon → Tue</div></div>`,()=>act.ask({dataset:{id:'pu'}}));if(['home','activity'].includes(stack[stack.length-1]?.name))refresh();},
  bannerTap(){$('#banner').classList.remove('show');if(bannerFn)bannerFn();},
  saved(){toast('Brief saved · Leo sees a NEW tag');back();}
